@@ -1,0 +1,51 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_CURATED_FOLDER}",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "channel-package-counts-source",
+          "dataRecordIdentifierProperty": "id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "channel-package-counts-source"
+        }
+      }
+    },
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "PACKAGE_CHANNEL_COUNTS.csv",
+          "value_delimeter": ","
+        }
+      }
+    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "channel-package-counts-source"
+        }
+      }
+    }
+  ]
+}
+

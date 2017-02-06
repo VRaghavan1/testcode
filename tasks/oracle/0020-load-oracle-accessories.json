@@ -1,0 +1,195 @@
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+         "in": {"properties": [
+            "product_ID.raw"]},
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    },
+      {
+      "taskCode": "UniqueDataRecordPropertiesToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+            "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+            "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+            "customer_code": "rogers",
+              "datarepo_code": "eclipse-dev",
+              "datarepo_collection_code": "oracle-accessories-source"
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language"
+          ],
+          "propertyValues": [
+            "sku",
+            "accessories",
+            "oracle",
+            "wireless",
+            ["EN","FR"]
+          ]
+        }
+      }
+    },
+   {
+      "taskCode": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "oracle-accessories-source",
+              "baseRecordLookupPropertyName": "product_ID",
+              "lookupIdPropertyNames": ["product_ID.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": {
+                "propertyName": "language.raw",
+                "operation": "term",
+                "value": "en"
+              }
+            },
+            "enrichConfiguration": {
+              "ute.sku.accessories.type.en": 
+                "$.matchingRecords[0].TYPE",
+              "ute.sku.accessories.brand.en": 
+                "$.matchingRecords[0].BRAND",
+              "ute.sku.accessories.price": 
+                "$.matchingRecords[0].PRICE",
+              "ute.sku.accessories.quantity": 
+                "$.matchingRecords[0].QUANTITY",
+              "ute.name.en": 
+                "$.matchingRecords[0].product_title",
+              "ute.description.en": 
+                "$.matchingRecords[0].short_description",
+              "ute.sku.accessories.imageSize1.en": 
+                "$.matchingRecords[0].image_size1",
+              "ute.sku.accessories.imageSize2.en": 
+                "$.matchingRecords[0].image_size2",
+              "ute.sku.accessories.imageSize3.en": 
+                "$.matchingRecords[0].image_size3"
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "oracle-accessories-source",
+              "baseRecordLookupPropertyName": "product_ID",
+              "lookupIdPropertyNames": ["product_ID.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": {
+                "propertyName": "language.raw",
+                "operation": "term",
+                "value": "fr"
+              }
+
+            },
+            "enrichConfiguration": {
+              "ute.sku.accessories.type.fr": 
+                "$.matchingRecords[0].TYPE",
+              "ute.sku.accessories.brand.fr": 
+                "$.matchingRecords[0].BRAND",
+              "ute.name.fr": 
+                "$.matchingRecords[0].product_title",
+              "ute.description.fr": 
+                "$.matchingRecords[0].short_description",
+              "ute.sku.accessories.imageSize1.fr": 
+                "$.matchingRecords[0].image_size1",
+              "ute.sku.accessories.imageSize2.fr": 
+                "$.matchingRecords[0].image_size2",
+              "ute.sku.accessories.imageSize3.fr": 
+                "$.matchingRecords[0].image_size3"
+            }
+          }
+        ]
+      }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"product_ID", "target":"ute~id"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateRecordClassProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"PAGE", "target":"ute~supplemental~analytics~page"},
+            {"source":"ANALYTICS_SECTION", "target":"ute~supplemental~analytics~analyticsSection"},
+            {"source":"ANALYTICS_FIELD_NAME", "target":"ute~supplemental~analytics~analyticsFieldName"},
+            {"source":"DATA_SOURCE", "target":"ute~supplemental~analytics~dataSource"},
+            {"source":"DATA_SOURCE_FIELD", "target":"ute~supplemental~analytics~dataSourceField"},
+            {"source":"Front-end Value", "target":"ute~supplemental~analytics~frontEndValue"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "runscriptOracleAccessories",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~id'])"
+         }
+       }
+     },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": ".",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute.*"]
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToEndecaXmlFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    }
+  ]
+}

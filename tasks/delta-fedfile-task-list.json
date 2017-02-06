@@ -1,0 +1,6 @@
+{
+    "taskFiles": [
+        "tasks/fed-files/*.json"
+    ]
+}
+

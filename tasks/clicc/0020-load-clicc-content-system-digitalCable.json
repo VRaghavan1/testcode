@@ -1,0 +1,99 @@
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+        "in": {"properties": [
+            "SYSTEM_TABNUM.raw", 
+            "SYSTEM_NAME.raw"]},
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    },
+    {
+      "taskCode": "UniqueDataRecordPropertiesToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+            "datareposervice_host": "localhost",
+            "datareposervice_port": "40380",
+            "customer_code": "rogers",
+              "datarepo_code": "eclipse-dev",
+              "datarepo_collection_code": "clicc-channels-source"
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language",
+            "ute~site"
+          ],
+          "propertyValues": [
+            "content",
+            "system",
+            "clicc",
+            "digitalCable",
+            ["EN","FR"],
+            "rogers"
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"SYSTEM_TABNUM", "target":"ute~id"},
+            {"source":"SYSTEM_NAME", "target":"ute~name"},
+            {"source":"SYSTEM_NAME", "target":"ute~name~fr"}
+          ]
+        }
+      }
+    },
+    {
+     "taskCode": "runscriptServiceDigitalCable",
+     "taskClass": "RunScriptComponent",
+     "taskConfigurationTemplate": {
+       "params": {
+         "script":
+         "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~sourceSystem'] + '-' + dataRecord['ute~id'])"
+       }
+     }
+   },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": ".",
+          "property": "*"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToEndecaXmlFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection-teamsite-new-content-source",
+      "taskClass": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_NEW_ARTICLE_FOLDER}",
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-new-content-source",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection-teamsite-new-content-source",
+      "taskClass": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-new-content-source",
+          "dataRecordIdentifierProperty": "id",
+          "name": "Teamsite Source for New Format"
+        }
+      }
+    },
+    {
+      "taskCode": "XmlFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "**/*",
+          "xpath": "/dct"
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-new-content-source"
+        }
+      }
+    }
+  ]
+}

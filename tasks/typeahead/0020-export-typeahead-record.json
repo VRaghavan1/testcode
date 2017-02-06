@@ -1,0 +1,91 @@
+
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+        "in": {},
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/foundation-dimensions-typeahead.csv"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+            "datareposervice_host": "localhost",
+            "datareposervice_port": "40380",
+            "customer_code": "rogers",
+            "datarepo_code": "eclipse-dev",
+            "datarepo_collection_code": "typeahead-record"
+        }
+      }
+    },
+    {
+      "taskClass": "FilterDataRecord",
+      "taskCode": "FilterDataRecord-RecordType",
+      "taskConfigurationTemplate": {
+        "params": {
+          "condition": {
+            "$and": [
+              {"dimval~spec": {"$ne": ""}},
+              {"dimval~spec": {"$exists": true}}
+            ]            
+          }
+        }
+      }
+    },
+    {
+      "taskCode": "DataRecordToCsvFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/foundation-dimensions-typeahead.csv",
+          "field_names": [
+            "dimval.unique_id",
+            "dimval.spec",
+            "dimval.dimension_name",
+            "dimval.display_order",
+            "dimval.parent_spec",
+            "dimval.display_name",
+            "dimval.match.use_spec",
+            "dimval.search_synonym",
+            "dimval.range.lower_bound",
+            "dimval.range.lower_bound_inclusive",
+            "dimval.range.upper_bound",
+            "dimval.range.upper_bound_inclusive",
+            "ute.recordType",
+            "ute.recordClass",
+            "ute.lineOfBusiness",
+            "imageURL",
+            "url",
+            "icon",
+            "displayName.en",
+            "displayName.fr",
+            "category"
+          ],
+          "field_mappings": [
+            {"target":"dimval.unique_id", "sourceProperty": "dimval~unique_id"},
+            {"target":"dimval.spec","sourceProperty": "dimval~spec"},
+            {"target":"dimval.dimension_name","sourceProperty": "dimval~dimension_name"},
+            {"target":"dimval.display_order","sourceProperty": "dimval~display_order"},
+            {"target":"dimval.parent_spec","sourceProperty": "dimval~parent_spec"},
+            {"target":"dimval.display_name","sourceProperty": "dimval~display_name"},
+            {"target":"dimval.match.use_spec","sourceProperty": "dimval~match.use_spec"},
+            {"target":"dimval.search_synonym","sourceProperty": "dimval~search_synonym"},
+            {"target":"dimval.range.lower_bound","sourceProperty": "dimval~range.lower_bound"},
+            {"target":"dimval.range.lower_bound_inclusive","sourceProperty": "dimval~range.lower_bound_inclusive"},
+            {"target":"dimval.range.upper_bound","sourceProperty": "dimval~range.upper_bound"},
+            {"target":"dimval.range.upper_bound_inclusive","sourceProperty": "dimval~range.upper_bound_inclusive"},
+            {"target":"ute.recordType", "sourceProperty": "ute.recordType"},
+            {"target":"ute.recordClass", "sourceProperty": "ute~recordClass"},
+            {"target":"ute.lineOfBusiness", "sourceProperty": "ute~lineOfBusiness"},
+            {"target":"imageURL", "sourceProperty": "image"},
+            {"target":"url", "sourceProperty": "url"},
+            {"target":"category", "sourceProperty": "category"}
+          ]
+        }
+      }
+    }  ]
+}

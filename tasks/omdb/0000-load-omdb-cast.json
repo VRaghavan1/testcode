@@ -1,0 +1,59 @@
+{
+  "tasks": [
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "localhost",
+          "datareposervice_port": "40380",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "omdb"
+          //"datarepo_collection_code": "atg-ute-pc"
+        }
+      }
+    }
+    // ,
+    // {
+    //   "taskCode": "SplitProperty",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "property": "Genre",
+    //       "separator": ","
+    //     }
+    //   }
+    // }
+    // ,
+    // {
+    //   "taskCode": "UpdateTypeaheadProperty",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "searchProperties": ["Cast", "Title", "Director", "Writer"],
+    //       "useRecordAsPayload": false,
+    //       "payloadProperties": ["Title", "imdbID"],
+    //       "displayTemplate": "{{{{Title}}}}"
+    //     }
+    //   }
+    // }
+    ,
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "omdb-temp"
+        }
+      }
+    }
+    // ,
+    // {
+    //   "taskCode": "Debug",
+    //   "taskConfigurationTemplate": {
+    //     "params": {}
+    //   }
+    // }
+  ]
+}
+

@@ -1,0 +1,421 @@
+{
+    "0001-load-unique-staged-clicc-data": {
+        "dependencies": [
+            "0000-stage-clicc-file"
+        ]
+    },
+    "0010-create-fedFiles-records": {
+        "dependencies": [
+            "0000-load-fedFiles"
+        ]
+    },
+    "0020-export-fedFiles-endeca": {
+        "dependencies": [
+            "0010-create-fedFiles-records"
+        ]
+    },
+    "0020-load-analytics": {
+        "dependencies": [
+            "0000-load-analytics"
+        ]
+    },
+    // "0001-load-clicc": {
+    //     "dependencies": [
+    //         "0000-load-system-to-city"
+    //     ]
+    // },
+    "0021-process-digital-channels-0": {
+        "dependencies": [
+            "0020-export-digital-channels",
+            "0010-create-featuredShows-record",
+            "0001-load-unique-staged-clicc-data"
+        ]
+    },
+    "0021-process-digital-channels-1": {
+        "dependencies": [
+            "0020-export-digital-channels",
+            "0010-create-featuredShows-record",
+            "0001-load-unique-staged-clicc-data"
+        ]
+    },
+    "0021-process-digital-channels-2": {
+        "dependencies": [
+            "0020-export-digital-channels",
+            "0010-create-featuredShows-record",
+            "0001-load-unique-staged-clicc-data"
+        ]
+    },
+    "0021-process-digital-channels-3": {
+        "dependencies": [
+            "0020-export-digital-channels",
+            "0010-create-featuredShows-record",
+            "0001-load-unique-staged-clicc-data"
+        ]
+    },
+    "0020-export-digital-channels": {
+        "dependencies": [
+            "0000-load-teamsite-channel-content",
+            "0000-load-pom-to-clicc",
+            "0000-load-alacarte-channels",
+            "0006-load-clicc-source-file-0","0006-load-clicc-source-file-1","0006-load-clicc-source-file-2","0006-load-clicc-source-file-3",
+            "0000-load-ptvExtract",
+            "0000-load-themepack",
+            "0000-load-ptv-channel"
+        ]
+    },
+    "0020-load-clicc-content-package-digitalCable": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0","0006-load-clicc-source-file-1","0006-load-clicc-source-file-2","0006-load-clicc-source-file-3"
+        ]
+    },
+    "0020-load-clicc-content-service-digitalCable": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0","0006-load-clicc-source-file-1","0006-load-clicc-source-file-2","0006-load-clicc-source-file-3"
+        ]
+    },
+    "0020-load-clicc-content-system-digitalCable": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0","0006-load-clicc-source-file-1","0006-load-clicc-source-file-2","0006-load-clicc-source-file-3"
+        ]
+    },
+    "0006-load-clicc-source-file-0": {
+        "dependencies": [
+            "0005-split-clicc-source-file",
+            "0000-load-system-to-city"
+        ]
+    },
+    "0006-load-clicc-source-file-1": {
+        "dependencies": [
+            "0005-split-clicc-source-file",
+            "0000-load-system-to-city"
+        ]
+    },
+    "0006-load-clicc-source-file-2": {
+        "dependencies": [
+            "0005-split-clicc-source-file",
+            "0000-load-system-to-city"
+        ]
+    },
+    "0006-load-clicc-source-file-3": {
+        "dependencies": [
+            "0005-split-clicc-source-file",
+            "0000-load-system-to-city"
+        ]
+    },
+    "0010-create-themepack-record": {
+        "dependencies": [
+            "0000-load-teamsite-channel-content",
+            "0000-load-ptv-themepack",
+            "0000-load-themepack"
+        ]
+    },
+    "0020-load-themepack-record": {
+        "dependencies": [
+            "0010-create-themepack-record"
+        ]
+    },
+    "0020-load-postalCode-to-channelLineup": {
+        "dependencies": [
+            "0000-load-postalCode-to-channelLineup"
+        ]
+    },
+    "0010-create-package-record": {
+        "dependencies": [
+            "0000-load-teamsite-channel-content",
+            "0000-load-channel-package-counts",
+            "0000-load-ptv-package",
+            "0000-load-ptvExtract"
+        ]
+    },
+    "0020-load-package-record": {
+        "dependencies": [
+            "0010-create-package-record"
+        ]
+    },
+    "0010-create-teamsite-legacy-content": {
+        "dependencies": [
+            "0000-load-teamsiteLegacy"
+        ]
+    },    
+    "0020-load-teamsite-legacy-content-source": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-content"
+        ]
+    },
+    "0010-create-teamsite-aggregate": {
+        "dependencies": [
+            "0010-create-teamsite-new-content"
+        ]
+    },
+    "0011-create-teamsite-aggregate": {
+        "dependencies": [
+            "0010-create-teamsite-new-content",
+            "0010-create-teamsite-aggregate"
+        ]
+    },
+    "0020-export-teamsite-aggregate": {
+        "dependencies": [
+            "0010-create-teamsite-aggregate",
+            "0011-create-teamsite-aggregate"
+        ]
+    },
+    "0012-create-teamsite-legacy-aggregate": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-content"
+        ]
+    },
+    "0013-create-teamsite-legacy-aggregate": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-content",
+            "0012-create-teamsite-legacy-aggregate"
+        ]
+    },
+    "0021-export-teamsite-legacy-aggregate": {
+        "dependencies": [
+            "0012-create-teamsite-legacy-aggregate",
+            "0013-create-teamsite-legacy-aggregate"
+        ]
+    },
+    "0010-create-teamsite-new-content": {
+        "dependencies": [
+            "0000-load-teamsiteNew",
+            "0000-load-teamsite-new-taxonomy-source"
+        ]
+    },
+    "0020-load-teamsite-new-content-source": {
+        "dependencies": [
+            "0010-create-teamsite-new-content"
+        ]
+    },
+    "0020-export-fragments": {
+        "dependencies": [
+            "0010-create-fragments-record"
+        ]
+    },
+    "0010-create-fragments-record": {
+        "dependencies": [
+            "0000-load-fragments"
+        ]
+    },
+    "0010-create-channel-to-series": {
+        "dependencies": [
+            "0000-load-rovi-channels",
+            "0000-load-rovi-schedule",
+            "0000-load-rovi-series"
+        ]
+    },
+
+    "0020-export-typeahead-record": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-typeahead-record",
+            "0010-create-teamsite-legacy-typeahead-record-fr",
+            "0010-create-teamsite-typeahead-record",
+            "0010-create-teamsite-typeahead-record-fr",
+            "0010-create-channel-typeahead-record",
+            "0010-create-channel-typeahead-record-fr",
+            "0010-create-show-typeahead-record",
+            "0010-create-show-typeahead-record-fr"
+        ]
+    },
+    "0010-create-teamsite-legacy-typeahead-record": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-content",
+            "0013-create-teamsite-legacy-aggregate",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-teamsite-legacy-typeahead-record-fr": {
+        "dependencies": [
+            "0010-create-teamsite-legacy-content",
+            "0013-create-teamsite-legacy-aggregate",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-teamsite-typeahead-record": {
+        "dependencies": [
+            "0010-create-teamsite-new-content",
+            "0005-clear-typeahead-records",
+            "0011-create-teamsite-aggregate"
+        ]
+    },
+    "0010-create-teamsite-typeahead-record-fr": {
+        "dependencies": [
+            "0010-create-teamsite-new-content",
+            "0005-clear-typeahead-records",
+            "0011-create-teamsite-aggregate"
+        ]
+    },
+    "0010-create-show-typeahead-record": {
+        "dependencies": [
+            "0000-load-featuredShows",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-show-typeahead-record-fr": {
+        "dependencies": [
+            "0000-load-featuredShows",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-channel-typeahead-record": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0",
+            "0006-load-clicc-source-file-1",
+            "0006-load-clicc-source-file-2",
+            "0006-load-clicc-source-file-3",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-channel-typeahead-record-fr": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0",
+            "0006-load-clicc-source-file-1",
+            "0006-load-clicc-source-file-2",
+            "0006-load-clicc-source-file-3",
+            "0005-clear-typeahead-records"
+        ]
+    },
+    "0010-create-fedFiles-typeahead-record-fr":{
+        "dependencies": [
+            "0010-create-fedFiles-records"
+        ]
+    },
+    "0010-create-fedFiles-typeahead-record":{
+        "dependencies": [
+            "0010-create-fedFiles-records"
+        ]
+    },
+    "0020-load-atg-sku-addon-wireless": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-price",
+            "0000-load-feature"
+        ]
+    },
+    "0020-load-atg-sku-channel-cable": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-category",
+            "0000-load-price",
+            "0000-load-feature",
+            "0000-load-featuredShows",
+            "0001-load-staged-iptv-clicc-data-by-component"
+        ]
+    },
+    "0001-load-staged-iptv-clicc-data-by-component": {
+        "dependencies": [
+            "0000-stage-iptv-clicc-file"
+        ]
+    },
+    "0020-load-atg-sku-channelPackage-cable": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-price"
+        ]
+    },
+    "0020-load-atg-sku-device-hsi": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-commonAttribute"
+        ]
+    },
+    "0020-load-atg-sku-device-wireless": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-price",
+            "0000-load-feature",
+            "0000-load-skuGroup"
+        ]
+    },
+    "0020-load-atg-sku-flexPackage-cable": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-price"
+        ]
+    },
+    "0020-load-atg-sku-offer-cable": {
+        "dependencies": [
+            "0000-load-pc"
+        ]
+    },
+    "0020-load-atg-sku-plan-hsi": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-commonAttribute"
+        ]
+    },
+    "0020-load-atg-sku-plan-wireless": {
+        "dependencies": [
+            "0000-load-pc",
+            "0000-load-price",
+            "0000-load-feature",
+            "0000-load-skuGroup"
+        ]
+    },
+    "0020-load-atg-supplemental-categoryGroup": {
+        "dependencies": [
+            "0000-load-catalogReference"
+        ]
+    },
+    "0020-load-atg-supplemental-price-cable": {
+        "dependencies": [
+            "0000-load-price"
+        ]
+    },
+    "0020-load-atg-supplemental-price-wireless": {
+        "dependencies": [
+            "0000-load-price",
+            "0000-load-skuGroup"
+        ]
+    },
+    "0020-load-atg-supplemental-price": {
+        "dependencies": [
+            "0000-load-price"
+        ]
+    },
+    "0020-load-atg-supplemental-region-cable": {
+        "dependencies": [
+            "0000-load-region"
+        ]
+    },
+    "0020-load-atg-supplemental-region-wireless": {
+        "dependencies": [
+            "0000-load-region"
+        ]
+    },
+    "0020-load-atg-supplemental-skuGroup": {
+        "dependencies": [
+            "0000-load-skuGroup"
+        ]
+    },
+    "0020-export-featuredShows-record": {
+        "dependencies": [
+            "0010-create-featuredShows-record"
+        ]
+    },
+    "0010-create-featuredShows-record": {
+        "dependencies": [
+            "0000-load-featuredShows",
+            "0010-get-unique-clicc-call-letters"
+        ]
+    },
+    "0010-get-unique-clicc-call-letters": {
+        "dependencies": [
+            "0006-load-clicc-source-file-0",
+            "0006-load-clicc-source-file-1",
+            "0006-load-clicc-source-file-2",
+            "0006-load-clicc-source-file-3"
+        ]
+    },
+    "0020-load-oracle-accessories":{
+        "dependencies": [
+            "0000-load-oracle-accessories"
+        ]
+    },
+    "0010-create-wireless-devices-typeahead-record":{
+        "dependencies": [
+            "0000-load-pc"
+        ]
+    }
+    
+}

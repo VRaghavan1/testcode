@@ -1,0 +1,448 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-legacy-content-record",
+          "dataRecordIdentifierProperty": "id",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-legacy-content-record",
+          "dataRecordIdentifierProperty": "id"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "teamsite-legacy-content-source"}
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language",
+            "ute~content~support~recordFormat",
+            "ute~content~support~contentType~en",
+            "ute~content~support~contentType~fr"
+          ],
+          "propertyValues": [
+            "content",
+            "support",
+            "teamsite",
+            "wireless",
+            ["EN","FR"],
+            "legacy",
+            "Help & Support",
+            "Aide et soutien"
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "CopyProperties-1",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"publish_attributes.is_active", "target":"ute~content~support~isActive"},
+            {"source":"publish_attributes.support_type", "target":"ute~content~support~supportType"},
+            {"source":"publish_attributes.first_tier_navigation", "target":"ute~content~support~nav~level1"},
+            {"source":"publish_attributes.second_tier_navigation", "target":"ute~content~support~nav~level2"},
+            {"source":"publish_attributes.article_type", "target":"ute~content~support~articleType"},
+            {"source":"publish_attributes.faqid", "target":"ute~content~support~faqId"},
+            {"source":"publish_attributes.canonicalURL", "target":"ute~content~support~canonicalURL"},
+            {"source":"publish_attributes.brand", "target":"ute~content~support~brand"},
+            {"source":"publish_attributes.customerType", "target":"ute~content~support~customerType"},
+            {"source":"publish_attributes.service", "target":"ute~content~support~service"},
+            {"source":"publish_attributes.equipment_type", "target":"ute~content~support~equipment_type"},
+            {"source":"publish_attributes.equipment_type_sub", "target":"ute~content~support~equipment_type_sub"},
+            {"source":"publish_attributes.province_selection", "target":"ute~content~support~provinceSelection"},
+            {"source":"publish_attributes.province_selection", "target":"ute~province"},
+            {"source":"publish_attributes.department_type", "target":"ute~content~support~departmentType"},
+            {"source":"publish_attributes.communication_type", "target":"ute~content~support~communicationType"},
+            {"source":"publish_attributes.model", "target":"ute~content~support~model"},
+            {"source":"publish_attributes.manufacturer", "target":"ute~content~support~manufacturer"},
+            {"source":"english_content.pageTitle", "target":"ute~content~support~typeahead~en"},
+            {"source":"english_content.pageDescription", "target":"ute~description~en"},
+            {"source":"english_content.pageDescription", "target":"ute~seo~pageDescription~en"},
+            {"source":"french_content.pageTitle", "target":"ute~content~support~typeahead~fr"},
+            {"source":"french_content.pageDescription", "target":"ute~description~fr"},
+            {"source":"french_content.pageDescription", "target":"ute~seo~pageDescription~fr"},
+            {"source":"english_content.englishcontent.question", "target":"ute~content~support~question~en"},
+            {"source":"english_content.englishcontent.answer", "target":"ute~content~support~answer~en"},
+            {"source":"french_content.frenchcontent.question", "target":"ute~content~support~question~fr"},
+            {"source":"french_content.frenchcontent.answer", "target":"ute~content~support~answer~fr"},
+            {"source":"english_content.englishcontent.key_term1", "target":"ute~seo~keywords~en"},
+            {"source":"french_content.frenchcontent.key_term1", "target":"ute~seo~keywords~fr"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "GetNameEn",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~name~en'] =  dataRecord.english_content.seo_title ? dataRecord.english_content.seo_title : dataRecord.english_content.pageTitle;"
+         }
+       }
+     },
+    {
+       "taskCode": "GetNameFr",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~name~fr'] =  dataRecord.french_content.seo_title ? dataRecord.french_content.seo_title : dataRecord.french_content.pageTitle;"
+         }
+       }
+     },
+
+    {
+       "taskCode": "GetPageTitleEn",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~seo~pageTitle~en'] =  dataRecord.english_content.seo_title ? dataRecord.english_content.seo_title : dataRecord.english_content.pageTitle;"
+         }
+       }
+     },
+    {
+       "taskCode": "GetPageTitleFr",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~seo~pageTitle~fr'] =  dataRecord.french_content.seo_title ? dataRecord.french_content.seo_title : dataRecord.french_content.pageTitle;"
+         }
+       }
+     },
+
+    {
+       "taskCode": "RunScript-001",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~province'] =  _.toUpper(dataRecord['ute~province']);"
+         }
+       }
+     },
+    {
+      "taskCode": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["*"],
+          "separator": "::"
+        }
+      }
+    },
+    {
+       "taskCode": "RunScript-1",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~supportType~en'] =  dataRecord['ute~content~support~supportType'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-2",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~supportType~fr'] =  dataRecord['ute~content~support~supportType'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-3",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~nav~level1~en'] =  dataRecord['ute~content~support~nav~level1'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-4",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~nav~level1~fr'] =  dataRecord['ute~content~support~nav~level1'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-5",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~nav~level2~en'] =  dataRecord['ute~content~support~nav~level2'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-6",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~nav~level2~fr'] =  dataRecord['ute~content~support~nav~level2'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-7",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~articleType~en'] =  dataRecord['ute~content~support~articleType'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-8",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~articleType~fr'] =  dataRecord['ute~content~support~articleType'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-9",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~brand~en'] =  dataRecord['ute~content~support~brand'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-10",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~brand~fr'] =  dataRecord['ute~content~support~brand'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-11",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~customerType~en'] =  dataRecord['ute~content~support~customerType'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-12",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~customerType~fr'] =  dataRecord['ute~content~support~customerType'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-13",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~equipment_type~en'] =  dataRecord['ute~content~support~equipment_type'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-14",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~equipment_type~fr'] =  dataRecord['ute~content~support~equipment_type'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-15",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~equipment_type_sub~en'] =  dataRecord['ute~content~support~equipment_type_sub'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-16",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~equipment_type_sub~fr'] =  dataRecord['ute~content~support~equipment_type_sub'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-17",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~departmentType~en'] =  dataRecord['ute~content~support~departmentType'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-18",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~departmentType~fr'] =  dataRecord['ute~content~support~departmentType'][2];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-19",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~communicationType~en'] =  dataRecord['ute~content~support~communicationType'][1];"
+         }
+       }
+     },
+     {
+       "taskCode": "RunScript-20",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~content~support~communicationType~fr'] =  dataRecord['ute~content~support~communicationType'][2];"
+         }
+       }
+     },
+     
+    {
+       "taskCode": "RunScript-21",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~content~support~articleType'][0] + '-' + dataRecord['ute~content~support~nav~level1'][0] + dataRecord['ute~content~support~faqId']);"
+         }
+       }
+     },
+     {
+      "taskCode": "RemoveProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": [
+            "ute~content~support~supportType", 
+            "ute~content~support~nav~level1", 
+            "ute~content~support~nav~level2", 
+            "ute~content~support~articleType", 
+            "ute~content~support~brand", 
+            "ute~content~support~customerType",
+            "ute~content~support~equipment_type",
+            "ute~content~support~equipment_type_sub",
+            "ute~content~support~departmentType",
+            "ute~content~support~communicationType"]
+        }
+      }
+    },
+    {
+      "taskCode": "CopyProperties-2",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"ute~internal~id", "target":"ute~id"}
+          ]
+        }
+      }
+    },
+    // {
+    //   "taskCode": "ReplacePropertyNames",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "pattern": "~",
+    //       "replacement": ".",
+    //       "property": "*"
+    //     }
+    //   }
+    // },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute~*"]
+        }
+      }
+    },
+    {
+      "taskCode": "RemoveEmptyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-legacy-content-record"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{ATG_ENDECA_EXPORT_FOLDER}/skuGroup",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "atg-ute-sku-group",
+          "dataRecordIdentifierProperty": "id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "atg-ute-sku-group"
+        }
+      }
+    },
+    {
+      "taskCode": "AtgEndecaXmlExportFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern":"**/sg_*.xhtml"}
+      }
+    },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": ".",
+          "replacement": "~",
+          "property": "*"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "atg-ute-sku-group"
+        }
+      }
+    }
+  ]
+}

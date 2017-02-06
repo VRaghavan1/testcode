@@ -1,0 +1,58 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_LEGACY_ARTICLE_FOLDER}",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-legacy-content-source",
+          "dataRecordIdentifierProperty": "id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-legacy-content-source"
+        }
+      }
+    },
+    {
+      "taskCode": "XmlFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+         "file_pattern": "**/*",
+          "xpath": "/StaticPage"
+        }
+      }
+    }
+  //   ,
+  //  {
+  //    "taskCode": "Debug",
+  //    "taskConfigurationTemplate": {
+  //      "params": {}
+  //    }
+  //  }
+   ,
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-legacy-content-source"
+        }
+      }
+    }
+  ]
+}

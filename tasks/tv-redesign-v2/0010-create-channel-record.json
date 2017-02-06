@@ -1,0 +1,568 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": {
+          "properties": [
+            "SERVICE_ID.raw",
+            "EXTERNAL_NAME_EN.raw",
+            "EXTERNAL_NAME_FR.raw", 
+            "CHANNEL_CALL_SIGN.raw", 
+            "CATEGORY_TAGS_EN.raw"]},
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "tv-clicc-channels-record",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "tv-clicc-channels-record",
+          "dataRecordIdentifierProperty": "id"
+        }
+      }
+    },
+    {
+      "taskCode": "UniqueDataRecordPropertiesToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+            "datareposervice_host": "localhost",
+            "datareposervice_port": "40380",
+            "customer_code": "rogers",
+              "datarepo_code": "eclipse-dev",
+              "datarepo_collection_code": "tv-clicc-channels-source"
+        }
+      }
+    },
+    {
+      "taskCode": "GetSystems",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-clicc-channels-source",
+              "baseRecordLookupPropertyName": "SERVICE_ID",
+              "lookupIdPropertyNames": ["SERVICE_ID.raw"],
+              "uniqueRecords": true
+            },
+            "enrichConfiguration": {
+              "systemId": [
+                "$.matchingRecords[*].SYSTEM_TABNUM"
+              ]
+            }
+          }
+          ]
+        }
+      }
+    },
+    {
+      "taskClass": "KeepUniqueValues",
+      "taskCode": "KeepUniqueValues-System",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["systemId"]
+        }
+      }
+    },
+   {
+      "taskCode": "GetShows",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "featured-shows-record",
+              "baseRecordLookupPropertyName": "CHANNEL_CALL_SIGN",
+              "lookupIdPropertyNames": ["ute~content~show~channel~cliccCallSign.raw"],
+              "uniqueRecords": true
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.shows.en": [
+                "$.matchingRecords[*].ute~name~en"
+              ],
+              "ute.sku.channel.shows.fr": [
+                "$.matchingRecords[*].ute~name~fr"
+              ]
+            }
+          }
+        ]
+      }
+      }
+    },
+  //  {
+  //     "taskCode": "HydrateDataRecord",
+  //     "taskConfigurationTemplate": {
+  //       "params": {
+  //         "hydrate_configuration": [
+
+  //           {
+  //           "matchConfiguration": {
+  //             "customerCode": "{CUSTOMER_CODE}",
+  //             "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+  //             "dataCollectionCode": "clicc-system-to-city-source",
+  //             "baseRecordLookupPropertyName": "systemId",
+  //             "lookupIdPropertyNames": ["SYSTEM_TABNUM.raw"],
+  //             "uniqueRecords": false
+  //           },
+  //           "enrichConfiguration": {
+  //             "ute~sku~channel~system~cities": [
+  //               "$.matchingRecords[*].CITY"
+  //             ],
+  //             "ute~sku~channel~province": "$.matchingRecords[*].PROVINCE",
+  //             "ute~sku~channel~stb": "$.matchingRecords[*].STB"
+  //           }
+  //         }
+  //         ]
+  //       }
+  //     }
+  //   },
+    {
+      "taskClass": "NormalizeDataRecord",
+      "taskCode": "NormalizeDataRecord-System",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["systemId"]
+        }
+      }
+    },
+
+    {
+      "taskCode": "HydrateDataRecord2",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-clicc-channels-source",
+              "baseRecordLookupPropertyName": "SERVICE_ID",
+              "lookupIdPropertyNames": ["SERVICE_ID"],
+              "uniqueRecords": true,
+              "lookupFilter": {
+                "propertyName": "SYSTEM_TABNUM.raw",
+                "operation": "term",
+                "value": "{{{systemId}}}"
+              }
+            },
+            "enrichConfiguration": {
+              "ute~sku~channel~system~names": [
+                "$.matchingRecords[*].SYSTEM_NAME"
+              ],
+              "ute~sku~channel~channelNumbers": [
+                "$.matchingRecords",
+                {
+                  "channel~id":"CHANNEL_ID",
+                  "channel~number":"CHANNEL_NUMBER"
+                }
+              ],
+              "ute~sku~channel~productCode": [
+                "$.matchingRecords[*].PRODUCT_CODE"
+              ],
+              "ute~province": "$.matchingRecords[*].SYSTEM_PROVINCE",
+              "province": "$.matchingRecords[*].SYSTEM_PROVINCE",
+              "ute~description~en": "$.matchingRecords[*].CHANNEL_DESCRIPTION_EN",
+              "ute~sku~channel~shortDescription~en": "$.matchingRecords[*].CHANNEL_DESCRIPTION_EN",
+              "ute~description~fr": "$.matchingRecords[*].CHANNEL_DESCRIPTION_FR",
+              "ute~sku~channel~shortDescription~fr": "$.matchingRecords[*].CHANNEL_DESCRIPTION_FR",
+              "ute~name~en": "$.matchingRecords[*].EXTERNAL_NAME_EN",
+              "ute~sku~channel~title~en": "$.matchingRecords[*].EXTERNAL_NAME_EN",
+              "ute~sku~channel~name~en": "$.matchingRecords[*].EXTERNAL_NAME_EN",
+
+              "ute~name~fr": "$.matchingRecords[*].EXTERNAL_NAME_FR",
+              "ute~sku~channel~title~fr": "$.matchingRecords[*].EXTERNAL_NAME_FR",
+              "ute~sku~channel~name~fr": "$.matchingRecords[*].EXTERNAL_NAME_FR",
+
+              "ute~id": "$.matchingRecords[*].SERVICE_ID",
+              "ute~sku~channel~callsign": "$.matchingRecords[*].CHANNEL_CALL_SIGN",
+              "ute~sku~channel~system~id": "$.matchingRecords[*].systemId",
+              "ute~sku~channel~channelLineup": "$.matchingRecords[*].systemId",
+
+              "ute~sku~channel~genre~en": "$.matchingRecords[*].GENRE_EN",
+              "ute~sku~channel~subgenre~en": "$.matchingRecords[*].GENRE_SUB_EN",
+
+              "ute~image": "$.matchingRecords[*].CHANNEL_LOGO",
+              "ute~image~1": "$.matchingRecords[*].CHANNEL_LOGO",
+              "ute~image~2": "$.matchingRecords[*].CHANNEL_LOGO",
+              "ute~image~3": "$.matchingRecords[*].CHANNEL_LOGO",
+              "ute~sku~channel~category": "$.matchingRecords[*].CATEGORY_TAGS_EN",
+              "ute~sku~channel~websiteURL": "$.matchingRecords[*].WEBSITE_URL",
+              "ute~sku~channel~categoryTag~en": "$.matchingRecords[*].CATEGORY_TAGS_EN"
+            }
+          }
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "HydrateDataRecord3",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+
+
+
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-endeca-dimensions-source",
+              "baseRecordLookupPropertyName": "ute~sku~channel~genre~en",
+              "lookupIdPropertyNames": ["dimval~spec.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "dimval~dimension_name.raw",
+                "operation": "term",
+                "value": "ute.sku.channel.genre.en"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute~sku~channel~genre~fr": "$.matchingRecords[*].displayName~fr",
+              "ute~sku~channel~genre~displayOrder": "$.matchingRecords[*].dimval~display_order"
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-endeca-dimensions-source",
+              "baseRecordLookupPropertyName": "ute~sku~channel~subgenre~en",
+              "lookupIdPropertyNames": ["dimval~spec.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "dimval~dimension_name.raw",
+                "operation": "term",
+                "value": "ute.sku.channel.subgenre.en"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute~sku~channel~subgenre~fr": "$.matchingRecords[*].displayName~fr",
+              "ute~sku~channel~subgenre~displayOrder": "$.matchingRecords[*].dimval~display_order"
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-endeca-dimensions-source",
+              "baseRecordLookupPropertyName": "ute~sku~channel~categoryTag~en",
+              "lookupIdPropertyNames": ["dimval~spec.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "dimval~dimension_name.raw",
+                "operation": "term",
+                "value": "ute.sku.channel.categoryTag.en"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute~sku~channel~categoryTag~fr": "$.matchingRecords[*].displayName~fr"
+            }
+          },
+
+
+
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-clicc-to-pom-mapping-source",
+              "baseRecordLookupPropertyName": "SERVICE_ID",
+              "lookupIdPropertyNames": ["CHANNEL_ID_CLICC"],
+              "uniqueRecords": true
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.pom.id": [
+                "$.matchingRecords[*].CHANNEL_ID_POM"
+              ]
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-product-code-to-soc-source",
+              "baseRecordLookupPropertyName": "ute~sku~channel~productCode",
+              "lookupIdPropertyNames": ["PRODUCT_CODE.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "SYSTEM_TABNUM.raw",
+                "operation": "term",
+                "value": "{{{systemId}}}"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.pom.soc": [
+                "$.matchingRecords[*].POM_SOC"
+              ],
+              "ute.sku.channel.price": [ 
+                  "$.matchingRecords[*].STANDALONE_PRICE"
+              ]
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-product-code-to-soc-source",
+              "baseRecordLookupPropertyName": "ute~sku~channel~productCode",
+              "lookupIdPropertyNames": ["PRODUCT_CODE.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "SYSTEM_TABNUM.raw",
+                "operation": "term",
+                "value": "{{{systemId}}}"
+              }, {
+                "propertyName": "IS_SWAPPABLE_IS_BONUS",
+                "operation": "term",
+                "value": "yes"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.bonus.pom.soc": [
+                "$.matchingRecords[*].POM_SOC"
+              ]
+            }
+          }
+          ]
+        }
+      }
+    },
+        {
+        "taskCode": "Cleanup prices",
+        "taskClass": "RemoveEmptyProperties",
+        "taskConfigurationTemplate": {
+            "params": {
+            "property": ["ute.sku.channel.price"]
+            }
+        }
+        },
+        {
+        "taskCode": "isAlacarte",
+        "taskClass": "RunScriptComponent",
+        "taskConfigurationTemplate": {
+            "params": {
+            "script":
+            "dataRecord['ute~sku~channel~alacarte'] = dataRecord['ute.sku.channel.price'] && dataRecord['ute.sku.channel.price'].length > 0 ? 'true' : 'false';"
+            }
+        }
+        },
+
+    {
+      "taskCode": "HydrateDataRecord4",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-packages-themepacks-source",
+              "baseRecordLookupPropertyName": "ute.sku.channel.pom.soc",
+              "lookupIdPropertyNames": ["POM_SOC.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "TYPE.raw",
+                "operation": "term",
+                "value": "Package"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.packages": [
+                "$.matchingRecords",
+                {
+                  "ute~package~id": "POM_SOC",
+                  "ute~name~en": "NAME_EN",
+                  "ute~name~fr": "NAME_FR"
+                }
+              ],
+              "ute.sku.channel.package.names.en": ["$.matchingRecords[*].NAME_EN"],
+              "ute.sku.channel.package.names.fr": ["$.matchingRecords[*].NAME_FR"],
+              "ute.sku.channel.package.id": ["$.matchingRecords[*].POM_SOC"]
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-packages-themepacks-source",
+              "baseRecordLookupPropertyName": "ute.sku.channel.bonus.pom.soc",
+              "lookupIdPropertyNames": ["POM_SOC.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "TYPE.raw",
+                "operation": "term",
+                "value": "Package"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.bonus.packages": [
+                "$.matchingRecords",
+                {
+                  "ute~package~id": "POM_SOC",
+                  "ute~name~en": "NAME_EN",
+                  "ute~name~fr": "NAME_FR"
+                }
+              ],
+              "ute.sku.channel.bonus.package.names.en": ["$.matchingRecords[*].NAME_EN"],
+              "ute.sku.channel.bonus.package.names.fr": ["$.matchingRecords[*].NAME_FR"],
+              "ute.sku.channel.bonus.package.id": ["$.matchingRecords[*].POM_SOC"]
+            }
+          },
+          {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "tv-packages-themepacks-source",
+              "baseRecordLookupPropertyName": "ute.sku.channel.pom.soc",
+              "lookupIdPropertyNames": ["POM_SOC.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": [{
+                "propertyName": "TYPE.raw",
+                "operation": "term",
+                "value": "Theme Pack"
+              }]
+            },
+            "enrichConfiguration": {
+              "ute.sku.channel.themePacks": [
+                "$.matchingRecords",
+                {
+                  "ute~themePack~id": "POM_SOC",
+                  "ute~name~en": "NAME_EN",
+                  "ute~name~fr": "NAME_FR"
+                }
+              ],
+              "ute.sku.channel.themePack.names.en": ["$.matchingRecords[*].NAME_EN"],
+              "ute.sku.channel.themePack.names.fr": ["$.matchingRecords[*].NAME_FR"],
+              "ute.sku.channel.themePack.id": ["$.matchingRecords[*].POM_SOC"]
+            }
+          }
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language",
+            "ute~site",
+            "ute~sku~channel~ondemand",
+            "ute~sku~channel~type"
+          ],
+          "propertyValues": [
+            "sku",
+            "channel",
+            "clicc",
+            "digitalCable",
+            ["EN", "FR"],
+            "rogers",
+            "0",
+            "normal"
+          ]
+        }
+      }
+    },
+    {
+      "taskClass": "KeepUniqueValues",
+      "taskCode": "KeepUniqueValues-2",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": [
+            "ute~sku~channel~productCode",
+            "ute~sku~channel~channelNumbers",
+            "ute~sku~channel~system~names",
+            "ute~sku~channel~system~cities"
+          ]
+        }
+      }
+    },
+
+  {
+      "taskCode": "CopyProperties-1",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"systemId", "target":"ute~sku~channel~system~id"},
+            {"source":"systemId", "target":"ute~sku~channel~channelLineup"}
+
+          ]
+        }
+      }
+    },
+    {
+     "taskCode": "GetInternalID",
+     "taskClass": "RunScriptComponent",
+     "taskConfigurationTemplate": {
+       "params": {
+         "script":
+         "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~id'] + '-' + dataRecord['ute~province'] + '-'+dataRecord['ute~sku~channel~category']+'-'+dataRecord['ute~sku~channel~callsign'] + '-' + dataRecord['ute~sku~channel~system~id'])"
+       }
+     }
+   },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute~*", "ute.*"]
+        }
+      }
+    },
+    {
+     "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": ".",
+          "replacement": "~",
+          "property": "*"
+        }
+      }
+    },
+    // {
+    //   "taskCode": "Debug",
+    //   "taskConfigurationTemplate": {
+    //     "params": {}
+    //   }
+    // },
+
+    {
+       "taskCode": "DataRecordToDataRepositoryBulk",
+       "taskConfigurationTemplate": {
+         "params": {
+           "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+           "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+           "customerCode": "{CUSTOMER_CODE}",
+           "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+           "dataCollectionCode": "tv-clicc-channels-record"
+         }
+       }
+     }
+  ]
+}

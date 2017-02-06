@@ -1,0 +1,65 @@
+{
+  "tasks": [
+    {
+      "taskCode": "SQLiteExecuteSQL",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_CLICC}",
+        "params": {
+            "sql": [
+              "DROP TABLE IF EXISTS CLICC_DTV_DOTCOM",
+              "CREATE TABLE CLICC_DTV_DOTCOM(SERVICE_ID,SERVICE_NAME_EN,CHANNEL_DESCRIPTION_EN,CHANNEL_DESCRIPTION_FR,EXTERNAL_NAME_EN,EXTERNAL_NAME_FR,CHANNEL_CALL_SIGN,GENRE_EN,GENRE_SUB_EN,CATEGORY_TAGS_EN,CHANNEL_LOGO,CHANNEL_NUMBER,PRODUCT_CODE,SYSTEM_TABNUM,SYSTEM_NAME,SYSTEM_PROVINCE,FUTURE_ID,WEBSITE_URL)"   
+            ],
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            }
+        }
+      }
+    },
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "CLICC_DTV_DOTCOM_*.csv",
+          "value_delimeter": "|"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "SQLiteWrite",
+      "taskConfigurationTemplate": {
+        "params": {
+            "sql": "INSERT INTO CLICC_DTV_DOTCOM(SERVICE_ID,SERVICE_NAME_EN,CHANNEL_DESCRIPTION_EN,CHANNEL_DESCRIPTION_FR,EXTERNAL_NAME_EN,EXTERNAL_NAME_FR,CHANNEL_CALL_SIGN,GENRE_EN,GENRE_SUB_EN,CATEGORY_TAGS_EN,CHANNEL_LOGO,CHANNEL_NUMBER,PRODUCT_CODE,SYSTEM_TABNUM,SYSTEM_NAME,SYSTEM_PROVINCE,FUTURE_ID,WEBSITE_URL) VALUES($SERVICE_ID,$SERVICE_NAME_EN,$CHANNEL_DESCRIPTION_EN,$CHANNEL_DESCRIPTION_FR,$EXTERNAL_NAME_EN,$EXTERNAL_NAME_FR,$CHANNEL_CALL_SIGN,$GENRE_EN,$GENRE_SUB_EN,$CATEGORY_TAGS_EN,$CHANNEL_LOGO,$CHANNEL_NUMBER,$PRODUCT_CODE,$SYSTEM_TABNUM,$SYSTEM_NAME,$SYSTEM_PROVINCE,$FUTURE_ID,$WEBSITE_URL)",
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            },
+            "sqlParameters": [
+              { "parameter":"$SERVICE_ID", "value": "SERVICE_ID" },
+              { "parameter":"$SERVICE_NAME_EN", "value": "SERVICE_NAME_EN" },
+              { "parameter":"$CHANNEL_DESCRIPTION_EN", "value": "CHANNEL_DESCRIPTION_EN" },
+              { "parameter":"$CHANNEL_DESCRIPTION_FR", "value": "CHANNEL_DESCRIPTION_FR" },
+              { "parameter":"$EXTERNAL_NAME_EN", "value": "EXTERNAL_NAME_EN" },
+              { "parameter":"$EXTERNAL_NAME_FR", "value": "EXTERNAL_NAME_FR" },
+              { "parameter":"$CHANNEL_CALL_SIGN", "value": "CHANNEL_CALL_SIGN" },
+              { "parameter":"$GENRE_EN", "value": "GENRE_EN" },
+              { "parameter":"$GENRE_SUB_EN", "value": "GENRE_SUB_EN" },
+              { "parameter":"$CATEGORY_TAGS_EN", "value": "CATEGORY_TAGS_EN" },
+              { "parameter":"$CHANNEL_LOGO", "value": "CHANNEL_LOGO" },
+              { "parameter":"$CHANNEL_NUMBER", "value": "CHANNEL_NUMBER" },
+              { "parameter":"$PRODUCT_CODE", "value": "PRODUCT_CODE" },
+              { "parameter":"$SYSTEM_TABNUM", "value": "SYSTEM_TABNUM" },
+              { "parameter":"$SYSTEM_NAME", "value": "SYSTEM_NAME" },
+              { "parameter":"$SYSTEM_PROVINCE", "value": "SYSTEM_PROVINCE" },
+              { "parameter":"$FUTURE_ID", "value": "FUTURE_ID" },
+              { "parameter":"$WEBSITE_URL", "value": "WEBSITE_URL" }
+            ]
+        }
+      }
+    }
+  ]
+}

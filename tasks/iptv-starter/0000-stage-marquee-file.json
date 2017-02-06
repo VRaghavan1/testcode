@@ -1,0 +1,53 @@
+{
+  "tasks": [
+    {
+      "taskCode": "SQLiteExecuteSQL",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_CLICC}",
+        "params": {
+            "sql": [
+              "DROP TABLE IF EXISTS MARQUEE",
+              "CREATE TABLE MARQUEE(POSTAL_ZIP_CODE,COMPANY_NUMBER,CHANNEL_LINEUP,MUNICIPALITY_CODE,MUNICIPALITY,PROV_CODE)"   
+            ],
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            }
+        }
+      }
+    },
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "MARQUEE_*.csv",
+          "value_delimeter": "|"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "SQLiteWrite",
+      "taskConfigurationTemplate": {
+        "params": {
+            "sql": "INSERT INTO MARQUEE(POSTAL_ZIP_CODE,COMPANY_NUMBER,CHANNEL_LINEUP,MUNICIPALITY_CODE,MUNICIPALITY,PROV_CODE) VALUES($POSTAL_ZIP_CODE,$COMPANY_NUMBER,$CHANNEL_LINEUP,$MUNICIPALITY_CODE,$MUNICIPALITY,$PROV_CODE)",
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            },
+            "sqlParameters": [
+              { "parameter":"$POSTAL_ZIP_CODE", "value": "POSTAL_ZIP_CODE" },
+              { "parameter":"$COMPANY_NUMBER", "value": "COMPANY_NUMBER" },
+              { "parameter":"$CHANNEL_LINEUP", "value": "CHANNEL_LINEUP" },
+              { "parameter":"$MUNICIPALITY_CODE", "value": "MUNICIPALITY_CODE" },
+              { "parameter":"$MUNICIPALITY", "value": "MUNICIPALITY" },
+              { "parameter":"$PROV_CODE", "value": "PROV_CODE" }
+            ]
+        }
+      }
+    }
+  ]
+}

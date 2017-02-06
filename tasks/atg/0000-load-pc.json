@@ -1,0 +1,96 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{ATG_ENDECA_EXPORT_FOLDER}/pc",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "atg-ute-pc",
+          "dataRecordIdentifierProperty": "id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "atg-ute-pc"
+        }
+      }
+    },
+    {
+      "taskCode": "AtgEndecaXmlExportFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern":"**/p_sku*.xhtml"}
+      }
+    },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": ".",
+          "replacement": "~",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "getCurrentTimeStamp",
+      "taskClass": "RunScriptComponent",
+      "taskConfigurationTemplate": {
+        "params": {
+          "script":
+          "dataRecord['ute~processingTime'] = _.now();"
+        }
+      }
+    },
+    {
+      "taskCode": "ConvertToInteger",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["*endDate", "*startDate", "*dateAvailable", "*creationDate"]
+        }
+      }
+    },
+
+    {
+    "taskClass": "FilterDataRecord",
+    "taskCode": "FilterDataRecord-Site",
+    "taskConfigurationTemplate": {
+      "params": {
+        "condition": {
+          "$and": [
+            {"sku~siteId": {"$eq": "{SITE}"}}
+          ]
+        }
+      }
+    }
+  },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "atg-ute-pc"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": {},
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "featured-shows-record",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "featured-shows-record",
+          "dataRecordIdentifierProperty": "id"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host":"{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port":"{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code":"rogers",
+          "datarepo_code":"eclipse-dev",
+          "datarepo_collection_code":"featured-shows"
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language"
+          ],
+          "propertyValues": [
+            "content",
+            "show",
+            "csv",
+            "cable",
+            ["EN","FR"]
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"record~spec", "target":"ute~id"},
+            {"source":"site", "target":"ute~site"},
+            {"source":"ShowName_P", "target":"ute~name"},
+            {"source":"Show_ShortDescription_P", "target":"ute~description"}
+          ]
+        }
+      }
+    },
+    {
+     "taskCode": "UpdateTombstoneProperties-2",
+     "taskClass": "CopyProperties",
+     "taskConfigurationTemplate": {
+       "params": {
+         "copyProperties": [
+           {"source":"ute~name", "target":"ute~name~en"},
+           {"source":"ute~name", "target":"ute~name~fr"},
+           {"source":"ute~name", "target":"ute~content~show~typeahead~name~en"},
+           {"source":"ute~name", "target":"ute~content~show~typeahead~name~fr"},
+           {"source":"ute~name", "target":"ute~content~show~name~en"},
+           {"source":"ute~name", "target":"ute~content~show~name~fr"},
+           {"source":"ute~description", "target":"ute~description~en"},
+           {"source":"ute~description", "target":"ute~description~fr"}
+           ]
+       }
+     }
+   },
+
+    {
+      "taskCode": "UpdateRecordClassProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"Channel SKU", "target":"ute~content~show~channel~id"},
+            {"source":"TTCode_P", "target":"ute~content~show~channelttcode"},
+            {"source":"Province", "target":"ute~content~show~channel~province"},
+            {"source":"Service_Name", "target":"ute~content~show~channel~serviceName"},
+            {"source":"Source_ID", "target":"ute~content~show~channel~sourceId"},
+            {"source":"call_letter", "target":"ute~content~show~channel~callLetter"},
+            {"source":"expanded_call_letter", "target":"ute~content~show~channel~expandedCallLetter"},
+
+            {"source":"Featured_Show", "target": "ute~content~show~isFeatured"},
+            {"source":"Language_D", "target":"ute~content~show~language"},
+            {"source":"Provider", "target":"ute~content~show~provider"},
+            {"source":"image1", "target":"ute~content~show~image1"},
+            {"source":"image2", "target":"ute~content~show~image2"},
+            {"source":"image3", "target":"ute~content~show~image3"},
+            {"source":"image4", "target":"ute~content~show~image4"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "HydrateDataRecord-1",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [{
+            "matchConfiguration": {
+              "matchType": "fuzzy", 
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "unique-clicc-call-letters",
+              "baseRecordLookupPropertyName": "ute~content~show~channel~serviceName",
+              "lookupIdPropertyNames": ["SERVICE_NAME_EN"]
+            },
+            "enrichConfiguration": {
+              "ute~content~show~channel~cliccServiceName": "$.matchingRecords[*].SERVICE_NAME_EN",
+              "ute~content~show~channel~cliccCallSign": "$.matchingRecords[0].{CLICC_CHANNELS_CALLSIGN_PROPERTY}"
+            }
+          }]
+        }
+      }
+    },
+    {
+       "taskCode": "runScriptFeaturedShows",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~id'] + '-' + dataRecord['ute~content~show~channel~province'])"
+         }
+       }
+     },
+    {
+      "taskCode": "SplitProvinceAndLanguage",
+      "taskClass": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["ute~content~show~channel~province", "ute~content~show~language"],
+          "separator": "|"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute~*"]
+        }
+      }
+    }
+    // ,
+    // {
+    //   "taskCode": "Debug",
+    //   "taskConfigurationTemplate": {
+    //     "params": {}
+    //   }
+    // }
+    ,
+    {
+       "taskCode": "DataRecordToDataRepositoryBulk",
+       "taskConfigurationTemplate": {
+         "params": {
+           "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+           "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+           "customerCode": "{CUSTOMER_CODE}",
+           "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+           "dataCollectionCode": "featured-shows-record"
+         }
+       }
+     }
+  ]
+}

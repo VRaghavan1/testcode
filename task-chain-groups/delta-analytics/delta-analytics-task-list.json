@@ -1,0 +1,7 @@
+{
+    "taskFiles": [
+      "tasks/analytics/*.json"
+    ]
+}
+
+

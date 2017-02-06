@@ -1,0 +1,150 @@
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "atg-ute-pc"}
+      }
+    },
+    {
+      "taskClass": "FilterDataRecord",
+      "taskCode": "FilterDataRecord-RecordType",
+      "taskConfigurationTemplate": {
+        "params": {
+          "condition": {
+            "record~type": {"$all": ["modemDeviceSku"]}
+          }
+        }
+      }
+    },
+    {
+      "taskClass": "FilterDataRecord",
+      "taskCode": "FilterDataRecord-Site",
+      "taskConfigurationTemplate": {
+        "params": {
+          "condition": {
+            "sku~siteId": {"$eq": "{SITE}"}
+          }
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language"
+          ],
+          "propertyValues": [
+            "sku",
+            "device",
+            "atg",
+            "hsi",
+            ["EN","FR"]
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"sku~repositoryId", "target":"ute~id"},
+            {"source":"sku~siteId", "target":"ute~site"},
+            {"source":"sku~displayName", "target":"ute~name"},
+            {"source":"sku~displayName_fr", "target":"ute~name~fr"},
+            {"source":"sku~description", "target":"ute~description"},
+            {"source":"sku~description_fr", "target":"ute~description~fr"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateRecordTypeProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"sku~endDate", "target":"ute~sku~endDate"},
+            {"source":"sku~startDate", "target":"ute~sku~startDate"},
+            {"source":"sku~onSale", "target":"ute~sku~onSale"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateRecordClassProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"sku~prices", "target":"ute~sku~device~hsi~price~id"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "runScriptAtgSkuDeviceHSI",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~id'])"
+         }
+       }
+     },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": ".",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute.*"]
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToEndecaXmlFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    }
+  ]
+}

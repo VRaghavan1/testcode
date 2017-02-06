@@ -1,0 +1,150 @@
+
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection-fed-files-records",
+      "taskClass": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": {},
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "fed-files-records",
+          "dataRecordIdentifierProperty": "id",
+          "name": "",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection-fed-files-records",
+      "taskClass": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "fed-files-records"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+            "datareposervice_host": "localhost",
+            "datareposervice_port": "40380",
+            "customer_code": "rogers",
+            "datarepo_code": "eclipse-dev",
+            "datarepo_collection_code": "fed-files-source"
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language",
+            "ute~site"
+          ],
+          "propertyValues": [
+            "content",
+            "fedPage",
+            ["fedFile"],
+            "all",
+            ["EN", "FR"],
+            "rogers"
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "SplitProperty-keywords",
+      "taskClass": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["Keywords"],
+          "separator": ","
+        }
+      }
+    },
+    {
+      "taskCode": "SplitProperty-province",
+      "taskClass": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["Province"],
+          "separator": " "
+        }
+      }
+    },
+    {
+      "taskCode": "TrimProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["Province","Keywords"],
+          "separator": ","
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"id", "target":"ute~id"},
+            {"source":"Province", "target":"ute~province"},
+            {"source":"Keywords", "target":"ute~content~fedPage~keywords"},
+            {"source":"Content Type - EN", "target":"ute~content~fedPage~contentType~en"},
+            {"source":"Content Type - FR", "target":"ute~content~fedPage~contentType~fr"},
+            {"source":"Category - EN", "target":"ute~content~fedPage~category~en"},
+            {"source":"Category - FR", "target":"ute~content~fedPage~category~fr"},
+            {"source":"URL - EN", "target":"ute~content~fedPage~url~en"},
+            {"source":"URL - FR", "target":"ute~content~fedPage~url~fr"},
+            {"source":"Title - EN", "target":"ute~name~en"},
+            {"source":"Title - FR", "target":"ute~name~fr"},
+            {"source":"Description - EN", "target":"ute~description~en"},
+            {"source":"Description - FR", "target":"ute~description~fr"},
+            {"source":"icon_class", "target":"ute~icon_class"}
+          ]
+        }
+      }
+    },
+    {
+     "taskCode": "CreateInternalId",
+     "taskClass": "CopyProperties",
+     "taskConfigurationTemplate": {
+       "params": {
+         "copyProperties": [
+           {"source":"ute~id", "target":"ute~internal~id"},
+           {"source":"ute~name~en", "target":"ute~content~support~typeahead~en"},
+           {"source":"ute~name~fr", "target":"ute~content~support~typeahead~fr"}
+           ]
+       }
+     }
+   },
+
+   {
+     "taskCode": "Debug",
+     "taskConfigurationTemplate": {
+       "params": {}
+     }
+   },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "fed-files-records"
+        }
+      }
+    }
+  ]
+}

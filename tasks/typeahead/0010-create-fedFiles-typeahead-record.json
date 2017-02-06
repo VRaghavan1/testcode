@@ -1,0 +1,110 @@
+
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "typeahead-record",
+          "dataRecordIdentifierProperty": "dimval~unique_id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "fed-files-records"}
+      }
+    },
+    {
+      "taskCode": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"target":"dimval~spec","source": "ute~content~support~typeahead~en"},
+            {"target":"dimval~display_name","source": "ute~content~support~typeahead~en"},
+            {"target":"dimval~dimension_name","value": "ute.content.support.typeahead.en"},
+            {"target":"dimval~display_order","value": ""},
+            {"target":"dimval~parent_spec","value": "/"},
+            {"target":"dimval~match~use_spec","value": "TRUE"},
+            {"target":"dimval~search_synonym","value": ""},
+            {"target":"dimval~range~lower_bound","value": ""},
+            {"target":"dimval~range~lower_bound_inclusive","value": ""},
+            {"target":"dimval~range~upper_bound","value": ""},
+            {"target":"dimval~range~upper_bound_inclusive","value": ""},
+            {"target":"ute~recordType", "source": "ute~recordType"},
+            {"target":"ute~recordClass", "source": "ute~recordClass"},
+            {"target":"ute~lineOfBusiness", "source": "ute~lineOfBusiness"},
+            {"target":"url", "source": "ute~content~fedPage~url~en"},
+            {"target":"image", "value": ""},
+            {"target":"category", "source": "ute~content~fedPage~category~en"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "runScriptAnalytics",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['dimval~unique_id'] = _.uniqueId('fedFileTypeAheadEnglish')"
+         }
+       }
+     },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": [
+            "dimval~unique_id",
+            "dimval~spec",
+            "dimval~display_name",
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~lineOfBusiness",
+            "url",
+            "dimval~dimension_name",
+            "dimval~display_order",
+            "dimval~parent_spec",
+            "dimval~match~use_spec",
+            "dimval~search_synonym",
+            "dimval~range~lower_bound",
+            "dimval~range~lower_bound_inclusive",
+            "dimval~range~upper_bound",
+            "dimval~range~upper_bound_inclusive",
+            "image",
+            "category"
+          ]
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "typeahead-record"
+        }
+      }
+    }
+    ]
+}

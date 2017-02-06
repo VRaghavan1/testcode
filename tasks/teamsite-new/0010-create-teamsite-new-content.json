@@ -1,0 +1,588 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-new-content-record",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "teamsite-new-content-record",
+          "dataRecordIdentifierProperty": "id"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "teamsite-new-content-source"}
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language",
+            "ute~content~support~recordFormat",
+            "ute~content~support~contentType~en",
+            "ute~content~support~contentType~fr"
+          ],
+          "propertyValues": [
+            "content",
+            "support",
+            "teamsite",
+            "wireless",
+            ["EN","FR"],
+            "new",
+            "Help & Support",
+            "Aide et soutien"
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "FlattenProperties-publish_attributes",
+      "taskClass": "FlattenProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["publish_attributes"],
+          "prependToProperty": "ute~content~support~",
+          "nestDelimiter": "~"
+        }
+      }
+    },
+    {
+      "taskCode": "FlattenProperties-selectors",
+      "taskClass": "FlattenProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["selectors"],
+          "prependToProperty": "ute~content~support~",
+          "nestDelimiter": "~"
+        }
+      }
+    },
+    // {
+    //   "taskCode": "FlattenProperties-english_content",
+    //   "taskClass": "FlattenProperties",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "property": ["english_content"],
+    //       "prependToProperty": "ute~content~support~",
+    //       "appendToProperty": "~en",
+    //       "nestDelimiter": "~"
+    //     }
+    //   }
+    // },
+    // {
+    //   "taskCode": "FlattenProperties-french_content",
+    //   "taskClass": "FlattenProperties",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "property": ["french_content"],
+    //       "prependToProperty": "ute~content~support~",
+    //       "appendToProperty": "~fr",
+    //       "nestDelimiter": "~"
+    //     }
+    //   }
+    // },
+    {
+      "taskCode": "FlattenProperties-seo_container",
+      "taskClass": "FlattenProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["seo_container"],
+          "prependToProperty": "ute~seo~",
+          "appendToProperty": "~en",
+          "nestDelimiter": "~"
+        }
+      }
+    },
+    {
+      "taskCode": "FlattenProperties-seo_container_fr",
+      "taskClass": "FlattenProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["seo_container_fr"],
+          "prependToProperty": "ute~seo~",
+          "appendToProperty": "~fr",
+          "nestDelimiter": "~"
+        }
+      }
+    },
+    {
+      "taskCode": "CopyProperties-1",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"id", "target":"ute~id"},
+            {"source":"publish_attributes.province_selection", "target":"ute~province"},
+            {"source":"publish_attributes.province_selection", "target":"ute~content~support~provinceSelection"},
+            {"source":"english_content.articleTitle", "target":"ute~name~en"},
+            {"source":"english_content.articleTitle", "target":"ute~content~support~typeahead~en"},
+            {"source":"english_content.search_result_article_desc", "target":"ute~description~en"},
+            {"source":"english_content.search_result_article", "target":"ute~content~support~search_result_article~en"},
+            {"source":"english_content.search_result_article_desc", "target":"ute~content~support~search_result_article_desc~en"},
+
+            {"source":"french_content.articleTitle", "target":"ute~name~fr"},
+            {"source":"french_content.articleTitle", "target":"ute~content~support~typeahead~fr"},
+            {"source":"french_content.search_result_article_desc", "target":"ute~description~fr"},
+            {"source":"french_content.search_result_article", "target":"ute~content~support~search_result_article~fr"},
+            {"source":"french_content.search_result_article_desc", "target":"ute~content~support~search_result_article_desc~fr"},
+
+            {"source":"publish_attributes", "target":"ute~content~support~publishAttributes~serialized"},
+            {"source":"selectors", "target":"ute~content~support~selectors~serialized"},
+            {"source":"english_content", "target":"ute~content~support~content~serialized~en"},
+            {"source":"french_content", "target":"ute~content~support~content~serialized~fr"},
+            {"source":"seo_container", "target":"ute~content~support~seoContainer~serialized~en"},
+            {"source":"seo_container_fr", "target":"ute~content~support~seoContainer~serialized~fr"},
+
+            {"source":"seo_container.keyword_container.keyWordSupport", "target":"ute~seo~keywords~en"},
+            {"source":"seo_container_fr.keyword_container.keyWordSupport", "target":"ute~seo~keywords~fr"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "GetPageTitleEn",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~seo~pageTitle~en'] =  dataRecord.english_content.search_result_article ? dataRecord.english_content.search_result_article : dataRecord.english_content.articleTitle;"
+         }
+       }
+     },
+    {
+       "taskCode": "GetPageTitleFr",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~seo~pageTitle~fr'] =  dataRecord.french_content.search_result_article ? dataRecord.french_content.search_result_article : dataRecord.french_content.articleTitle;"
+         }
+       }
+     },
+
+    {
+       "taskCode": "RunScript-001",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~province'] =  _.toUpper(dataRecord['ute~province']);"
+         }
+       }
+     },
+  {
+      "taskCode": "HydrateDataRecord-1",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "teamsite-new-taxonomy-source",
+              "baseRecordLookupPropertyName": "ute~content~support~article_ctgy",
+              "lookupIdPropertyNames": ["property value.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": {
+                "propertyName": "id.raw",
+                "operation": "term",
+                "value": "articleCategory"
+              }
+            },
+            "enrichConfiguration": {
+              "ute~content~support~article_ctgy~en": "$.matchingRecords[*].English-value",
+              "ute~content~support~article_ctgy~fr": "$.matchingRecords[*].French-value"
+            }
+          },
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "teamsite-new-taxonomy-source",
+              "baseRecordLookupPropertyName": "ute~content~support~additional_article_ctgy",
+              "lookupIdPropertyNames": ["property value.raw"],
+              "uniqueRecords": true,
+              "lookupFilter": {
+                "propertyName": "id.raw",
+                "operation": "term",
+                "value": "additionalArticleCategory"
+              }
+            },
+            "enrichConfiguration": {
+              "ute~content~support~additional_article_ctgy~en": "$.matchingRecords[*].English-value",
+              "ute~content~support~additional_article_ctgy~fr": "$.matchingRecords[*].French-value"
+            }
+          }
+
+
+
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~equipmentType",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "equipmentType"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~equipmentType~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~equipmentType~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~equipmentTypeDetails",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "equipmentTypeDetails"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~equipmentTypeDetails~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~equipmentTypeDetails~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~call_driver",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "callDriver"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~call_driver~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~call_driver~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~call_driver_details",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "call_driver_details"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~call_driver_details~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~call_driver_details~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~trouble_type",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "troubleShootingType"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~trouble_type~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~trouble_type~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~account_ctrgy",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "account_ctrgy"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~account_ctrgy~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~account_ctrgy~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~account_ctrgy_details",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "account_ctrgy_details"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~account_ctrgy_details~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~account_ctrgy_details~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~addon",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "addon"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~addon~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~addon~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~depart_type",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "departmentType"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~depart_type~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~depart_type~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~tv_content~tv_guide",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "tvguide"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~tv_content~tv_guide~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~tv_content~tv_guide~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~tv_content~viewing_platform",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "viewingPlatform"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~tv_content~viewing_platform~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~tv_content~viewing_platform~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~customer_lifecycle",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "customer_lifecycle"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~customer_lifecycle~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~customer_lifecycle~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // },
+          //   {
+          //   "matchConfiguration": {
+          //     "customerCode": "rogers",
+          //     "dataRepositoryCode": "eclipse-dev",
+          //     "dataCollectionCode": "teamsite-new-taxonomy-source",
+          //     "baseRecordLookupPropertyName": "ute~content~support~customer_lifecycle_details",
+          //     "lookupIdPropertyNames": ["property value.raw"],
+          //     "uniqueRecords": true,
+          //     "lookupFilter": {
+          //       "propertyName": "id.raw",
+          //       "operation": "term",
+          //       "value": "customer_lifecycle_details"
+          //     }
+          //   },
+          //   "enrichConfiguration": {
+          //     "ute~content~support~customer_lifecycle_details~en": "$.matchingRecords[*].English-value",
+          //     "ute~content~support~customer_lifecycle_details~fr": "$.matchingRecords[*].French-value"
+          //   }
+          // }
+          ]
+        }
+      }
+    },
+
+
+
+
+
+
+
+
+
+    {
+      "taskCode": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": [
+            "ute~province",
+            "ute~content~support~language",
+            "ute~content~support~equipmentType",
+            "ute~content~support~equipmentTypeDetails",
+            "ute~content~support~tv_content~viewing_platform"
+            ],
+          "separator": ","
+        }
+      }
+    },
+    {
+      "taskCode": "TrimProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": [
+            "ute~province",
+            "ute~content~support~language",
+            "ute~content~support~equipmentType",
+            "ute~content~support~equipmentTypeDetails",
+            "ute~content~support~tv_content~viewing_platform"
+            ]
+        }
+      }
+    },
+    {
+      "taskCode": "CopyProperties-2",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"ute~id", "target":"ute~internal~id"}
+          ]
+        }
+      }
+    },    
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": ".",
+          "replacement": "~",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute~*"]
+        }
+      }
+    },
+    {
+      "taskCode": "RemoveEmptyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-new-content-record"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+    "taskFiles": [
+      "tasks/clicc/0000-stage-iptv-clicc-file.json",
+      "tasks/featured-shows/0000-load-featuredShows.json",
+      "tasks/atg/*.json"
+    ]
+}

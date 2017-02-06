@@ -1,0 +1,89 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection-rovi-schedule-source",
+      "taskClass": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{FOUNDATION_DATA}/rovi",
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-schedule-source",
+          "dataRecordIdentifierProperty": "id",
+          "name": "Dwayne's Collection",
+          "successIfExists": true
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "TruncateDataCollection-rovi-schedule-source",
+      "taskClass": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-schedule-source"
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "rovi_schedule.csv",
+          "value_delimeter": "|",
+          "field_names": [
+              "Source_ID",
+              "Start_Date",
+              "Start_Time",
+              "Is_Time_Approximate",
+              "Duration",
+              "Program_ID",
+              "Series_ID",
+              "TV_Rating",
+              "TV_Advisory",
+              "Program_Showing_Type",
+              "Caption_Type",
+              "Audio_Level",
+              "ThreeD_Level",
+              "SAP",
+              "Color_Type",
+              "Airing_Type",
+              "Subtitled",
+              "Joined_In_Progress",
+              "Subject_to_Blackout",
+              "Aspect_Ratio",
+              "Descriptive_Video_Service",
+              "Part_Number",
+              "Total_Number_of_Parts",
+              "HDTV_Level",
+              "Syndicated",
+              "Delta",
+              "Schedule_ID"
+            ]
+        }
+      }
+    }
+    ,
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {
+//        }
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-schedule-source"
+        }
+      }
+    }
+  ]
+}
+

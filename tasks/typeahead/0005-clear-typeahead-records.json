@@ -1,0 +1,36 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": {"properties": [
+            "SERVICE_ID.raw", 
+            "SERVICE_NAME_EN_EXTERNAL.raw", 
+            "SERVICE_NAME_FR_EXTERNAL.raw", 
+            "SERVICE_CALLSIGN.raw", 
+            "CATEGORY_NAME.raw"]},
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "typeahead-record",
+          "dataRecordIdentifierProperty": "dimval~unique_id",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "typeahead-record"
+        }
+      }
+    }
+  ]
+}

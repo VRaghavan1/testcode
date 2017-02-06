@@ -1,0 +1,23 @@
+{
+    "taskFiles": [
+        "tasks/oracle/*.json",
+        "tasks/teamsite/0000-load-channel-package-counts.json",
+        "tasks/teamsite/0000-load-teamsite-channel-content.json",
+        "tasks/teamsite/0010-*.json",
+        "tasks/teamsite/0020-*.json",
+        "tasks/featured-shows/0000-*.json",
+        "tasks/featured-shows/0010-*.json",
+        "tasks/pom/*.json",
+        "tasks/clicc/0000-load-alacarte-channels.json",
+        "tasks/clicc/0000-load-pom-to-clicc.json",
+        "tasks/clicc/0000-load-system-to-city.json",
+        "tasks/clicc/0000-stage-clicc-file.json",
+        "tasks/clicc/0001-load-unique-staged-clicc-data.json",
+        "tasks/clicc/0005-split-clicc-source-file.json",
+        "tasks/clicc/0006-*.json",
+        "tasks/clicc/0020-export-digital-channels.json",
+        "tasks/clicc/0020-load-clicc*.json",
+        "tasks/clicc/0021-*.json"
+
+    ]
+}

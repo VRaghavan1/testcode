@@ -1,0 +1,91 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "in": "{OMDB_DATA}",
+        "params": {
+          //"file_pattern": "omdbFull-sample.txt",
+          "file_pattern": "omdbFull.txt",
+          "value_delimeter": "\t"
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "SplitProperty-Genre-Cast",
+      "taskClass": "SplitProperty",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["Genre", "Cast"],
+          "separator": ","
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "TrimProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "property": ["Cast","Genre"],
+          "separator": ","
+        }
+      }
+    }
+    // ,
+    // {
+    //   "taskCode": "UpdateTypeaheadProperty-Cast",
+    //   "taskClass": "UpdateTypeaheadProperty",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "suggestProperty": "cast",
+    //       "searchProperties": ["Cast"],
+    //       "useRecordAsPayload": false,
+    //       "payloadProperties": ["Title", "imdbID", "Cast"],
+    //       "displayTemplate": "{{{{Cast}}}}"
+    //     }
+    //   }
+    // }
+    // ,
+    // {
+    //   "taskCode": "UpdateTypeaheadProperty-Director",
+    //   "taskClass": "UpdateTypeaheadProperty",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "suggestProperty": "director",
+    //       "searchProperties": ["Director"],
+    //       "useRecordAsPayload": false,
+    //       "payloadProperties": ["Title", "imdbID", "Director"],
+    //       "displayTemplate": "{{{{Director}}}}"
+    //     }
+    //   }
+    // }
+    // ,
+    // {
+    //   "taskCode": "UpdateTypeaheadProperty-Title",
+    //   "taskClass": "UpdateTypeaheadProperty",
+    //   "taskConfigurationTemplate": {
+    //     "params": {
+    //       "suggestProperty": "title",
+    //       "searchProperties": ["Title"],
+    //       "useRecordAsPayload": false,
+    //       "payloadProperties": ["Title", "imdbID"],
+    //       "displayTemplate": "{{{{Title}}}}"
+    //     }
+    //   }
+    // }
+    ,
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "omdb"
+        }
+      }
+    }
+
+  ]
+}
+

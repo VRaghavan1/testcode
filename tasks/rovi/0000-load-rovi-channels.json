@@ -1,0 +1,72 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection-rovi-channels-source",
+      "taskClass": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{FOUNDATION_DATA}/rovi",
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-channels-source",
+          "dataRecordIdentifierProperty": "id",
+          "name": "Dwayne's Collection",
+          "successIfExists": true
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "TruncateDataCollection-rovi-channels-source",
+      "taskClass": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-channels-source"
+        }
+      }
+    }
+    ,
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "rovi_channels.csv",
+          "value_delimeter": "|",
+          "field_names": [
+              "skip-1",
+              "source_id",
+              "call_letters",
+              "skip-4",
+              "skip-5",
+              "skip-6",
+              "skip-7",
+              "skip-8",
+              "skip-9",
+              "skip-10"
+              ]
+        }
+      }
+    }
+    ,
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {
+//        }
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "rovi-channels-source"
+        }
+      }
+    }
+  ]
+}
+

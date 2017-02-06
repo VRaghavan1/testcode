@@ -1,0 +1,150 @@
+{
+  "tasks": [
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "{CUSTOMER_CODE}",
+          "datarepo_code": "{DATA_REPOSITORY_CODE}",
+          "datarepo_collection_code": "teamsite-legacy-content-record"
+        }
+      }
+    },
+    {
+     "taskCode": "RunScriptComponent-100",
+     "taskClass": "RunScriptComponent",
+     "taskConfigurationTemplate": {
+       "params": {
+         "script":
+         "dataRecord['ute~content~support~seoUrl'] = !_.isEmpty(dataRecord['ute~content~support~seoUrl']) ? dataRecord['ute~content~support~seoUrl'] : _.kebabCase(dataRecord['ute~seo~pageTitle~en']);"
+       }
+     }
+    },
+    {
+      "taskCode": "HandleChildren",
+      "taskClass": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "teamsite-legacy-content-record",
+              "baseRecordLookupPropertyName": "ute~seo~pageTitle~en",
+              "lookupIdPropertyNames": ["ute~seo~pageTitle~en.raw"]
+            },
+            "enrichConfiguration": {
+                "childCount": [
+                  "$.matchingRecords[*].ute~seo~pageTitle~en"
+                ]
+            }
+          }
+        ]
+      }
+      }
+    },
+    {
+       "taskCode": "GetChildCount",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['childCount'] = dataRecord['childCount'].length;"
+         }
+       }
+     },
+    {
+      "description": "If there are no other legacy articles in this group (i.e. this is a standalone article), set searchable to 'true'",
+      "taskCode": "MarkAsNotSearchable",
+      "taskClass": "RunScriptComponent",
+      "taskConfigurationTemplate": {
+      "params": {
+        "script":
+        "dataRecord['ute~content~support~isSearchable'] = dataRecord['childCount'] < 2 ? 'true' : 'false';"
+       }
+     }
+    },
+
+    {
+      "taskCode": "SetPageTitleEn",
+      "taskClass": "RunScriptComponent",
+      "taskConfigurationTemplate": {
+        "params": {
+          "script":
+          "dataRecord['ute~seo~pageTitle~en'] =  dataRecord['ute~seo~pageTitle~en'] ? dataRecord['ute~seo~pageTitle~en'] : 'Rogers.com';"
+        }
+      }
+    },
+
+    {
+      "taskCode": "SetPageTitleFr",
+      "taskClass": "RunScriptComponent",
+      "taskConfigurationTemplate": {
+        "params": {
+          "script":
+          "dataRecord['ute~seo~pageTitle~fr'] =  dataRecord['ute~seo~pageTitle~fr'] ? dataRecord['ute~seo~pageTitle~fr'] : 'Rogers.com';"
+        }
+      }
+    },
+
+    {
+      "taskCode": "CopyProperties1",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"ute~seo~pageTitle~en", "target":"ute~seo~seo_title~en"},
+            {"source":"ute~seo~pageTitle~fr", "target":"ute~seo~seo_title~fr"}
+          ]
+        }
+      }
+    },
+
+    {
+      "taskCode": "CopyProperties2",
+      "taskClass": "CopyProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "copyProperties": [
+            {"source":"ute~content~support~display_from_date_hidden", "target":"ute~dateActive", "default": "647460275"},
+            {"source":"ute~content~support~display_to_date_hidden", "target":"ute~dateInactive", "default": "7274426675"}
+          ]
+        }
+      }
+    },
+
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "ute~content~support~isActive",
+          "replacement": "ute~is_active",
+          "property": "ute~content~support~isActive"
+        }
+      }
+    },
+
+
+  //  {
+  //    "taskCode": "Debug",
+  //    "taskConfigurationTemplate": {
+  //      "params": {}
+  //    }
+  //  }
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "teamsite-aggregate-legacy-content-record"
+        }
+      }
+    }
+
+  ]
+}

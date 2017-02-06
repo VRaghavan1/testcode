@@ -1,0 +1,184 @@
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "atg-ute-price"}
+      }
+    },
+    {
+      "taskClass": "FilterDataRecord",
+      "taskCode": "FilterDataRecord-RecordType",
+      "taskConfigurationTemplate": {
+        "params": {
+          "condition": {
+            "record~type": {"$in": ["wirelessDevicePrice", "wirelessSocPrice"]}
+          }
+        }
+      }
+    },
+    {
+      "taskCode": "HydrateDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "hydrate_configuration": [
+            {
+            "matchConfiguration": {
+              "customerCode": "rogers",
+              "dataRepositoryCode": "eclipse-dev",
+              "dataCollectionCode": "atg-ute-sku-group",
+              "baseRecordLookupPropertyName": "wirelessHardwarePrice~activityType",
+              "lookupIdPropertyNames": ["abstractGroup~repositoryId"]
+            },
+            "enrichConfiguration": {
+              "ute~sku~supplemental~price~activityType": [
+                "$.matchingRecords[*]['abstractGroup~key']"
+              ]
+            }
+          },
+          {
+          "matchConfiguration": {
+            "customerCode": "rogers",
+            "dataRepositoryCode": "eclipse-dev",
+            "dataCollectionCode": "atg-ute-sku-group",
+            "baseRecordLookupPropertyName": "wirelessDevicePrice~planCategory",
+            "lookupIdPropertyNames": ["abstractGroup~repositoryId"]
+          },
+          "enrichConfiguration": {
+            "ute~sku~supplemental~price~planCategory": [
+              "$.matchingRecords[*]['abstractGroup~key']"
+            ]
+          }
+        },
+        {
+        "matchConfiguration": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "atg-ute-sku-group",
+          "baseRecordLookupPropertyName": "wirelessDevicePrice~term",
+          "lookupIdPropertyNames": ["abstractGroup~repositoryId"]
+        },
+        "enrichConfiguration": {
+          "ute~sku~supplemental~price~term": [
+            "$.matchingRecords[*]['abstractGroup~key']"
+          ]
+        }
+      }
+        ]
+        }
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~lineOfBusiness",
+            "ute~language"
+          ],
+          "propertyValues": [
+            "supplemental",
+            "price",
+            "atg",
+            "wireless",
+            ["EN","FR"]
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"price~repositoryId", "target":"ute~id"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateRecordClassProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"price~listPrice", "target":"ute~supplemental~price~listPrice"},
+            {"source":"wirelessDevicePrice~chargeType", "target":"ute~supplemental~price~chargeType"},
+            {"source":"wirelessPrice~boosterPoints", "target":"ute~supplemental~price~boosterPoints"},
+            {"source":"wirelessDevicePrice~hupTier", "target":"ute~supplemental~price~hupTier"},
+            {"source":"wirelessDevicePrice~isDefault", "target":"ute~supplemental~price~isDefault"},
+            {"source":"wirelessDevicePrice~isFinancing", "target":"ute~supplemental~price~isFinancing"},
+            {"source":"wirelessDevicePrice~installments", "target":"ute~supplemental~price~installments"},
+            {"source":"wirelessDevicePrice~earlyHupPeriod", "target":"ute~supplemental~price~earlyHupPeriod"},
+            {"source":"wirelessDevicePrice~mandatoryPayment", "target":"ute~supplemental~price~mandatoryPayment"},
+            {"source":"wirelessDevicePrice~isPrimaryMSF", "target":"ute~supplemental~price~isPrimaryMSF"},
+            {"source":"wirelessSocPrice~chargeType", "target":"ute~supplemental~price~socChargeType"},
+            {"source":"price~skuId", "target":"ute~supplemental~price~skuId"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "runScriptAtgSuppPriceWireless",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~lineOfBusiness'] + '-' + dataRecord['ute~id'])"
+         }
+       }
+     },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": ".",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute.*"]
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToEndecaXmlFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    }
+  ]
+}

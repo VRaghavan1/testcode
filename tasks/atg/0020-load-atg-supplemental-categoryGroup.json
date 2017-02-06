@@ -1,0 +1,112 @@
+{
+  "tasks": [
+    {
+      "taskCode": "Shell-RM",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "options": "-f",
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "atg-ute-catalog-reference"}
+      }
+    },
+    {
+      "taskCode": "CreateTombstoneProperties",
+      "taskClass": "CreateProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "propertyNames": [
+            "ute~recordType",
+            "ute~recordClass",
+            "ute~sourceSystem",
+            "ute~language"
+          ],
+          "propertyValues": [
+            "supplemental",
+            "categoryGroup",
+            "atg",
+            ["EN","FR"]
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateTombstoneProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"categoryGroup~repositoryId", "target":"ute~id"}
+          ]
+        }
+      }
+    },
+    {
+      "taskCode": "UpdateRecordClassProperties",
+      "taskClass": "ChangePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "replacePropertyNames": [
+            {"source":"categoryGroup~key", "target":"ute~supplemental~categoryGroup~key"},
+            {"source":"hardwareCategoryGroup~category", "target":"ute~supplemental~categoryGroup~hardwareCategory.id"},
+            {"source":"servicesCategoryGroup~planSoc", "target":"ute~supplemental~categoryGroup~planSoc.id"},
+            {"source":"servicesCategoryGroup~addonSoc", "target":"ute~supplemental~categoryGroup~addonSoc.id"}
+          ]
+        }
+      }
+    },
+    {
+       "taskCode": "runScriptAtgSuppCategoryGroup",
+       "taskClass": "RunScriptComponent",
+       "taskConfigurationTemplate": {
+         "params": {
+           "script":
+           "dataRecord['ute~internal~id'] =  _.snakeCase(dataRecord['ute~recordType'] + '-' + dataRecord['ute~recordClass'] + '-' + dataRecord['ute~sourceSystem'] + '-' + dataRecord['ute~id'])"
+         }
+       }
+     },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": ".",
+          "property": "*"
+        }
+      }
+    },
+    {
+      "taskCode": "PickProperties",
+      "taskConfigurationTemplate": {
+        "params": {
+          "properties": ["ute.*"]
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToEndecaXmlFile",
+      "taskConfigurationTemplate": {
+        "params": {
+          "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/{TASK_FILENAME}.xml"
+        }
+      }
+    }
+  ]
+}

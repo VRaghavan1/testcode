@@ -1,0 +1,61 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": {},
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "clicc-channels-properties",
+          "successIfNotExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{CUSTOMER_CODE}",
+          "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "clicc-channels-properties",
+          "dataRecordIdentifierProperty": "id"
+        }
+      }
+    },
+    {
+      "taskCode": "SQLiteRead",
+      "taskConfigurationTemplate": {
+        "params": {
+            "sql": "SELECT DISTINCT SERVICE_ID, EXTERNAL_NAME_EN, EXTERNAL_NAME_FR, CHANNEL_DESCRIPTION_EN,  CHANNEL_DESCRIPTION_FR, CHANNEL_LOGO, WEBSITE_URL FROM CLICC_DTV_DOTCOM",
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            },
+            "loadSqlFromFile": false
+        }
+      }
+    },
+   {
+     "taskCode": "Debug",
+     "taskConfigurationTemplate": {
+       "params": {}
+     }
+   },
+     {
+       "taskCode": "DataRecordToDataRepositoryBulk",
+       "taskConfigurationTemplate": {
+         "params": {
+           "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+           "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+           "customerCode": "{CUSTOMER_CODE}",
+           "dataRepositoryCode": "{DATA_REPOSITORY_CODE}",
+           "dataCollectionCode": "clicc-channels-properties"
+         }
+       }
+     }
+  ]
+}

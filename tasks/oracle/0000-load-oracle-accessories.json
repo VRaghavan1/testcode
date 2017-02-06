@@ -1,0 +1,57 @@
+{
+  "tasks": [
+    {
+      "taskCode": "CreateDataCollection-oracle-accessories-source",
+      "taskClass": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_ORACLE_FOLDER}",
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "oracle-accessories-source",
+          "dataRecordIdentifierProperty": "id",
+          "name": " ",
+          "successIfExists": true
+        }
+      }
+    },
+    {
+      "taskCode": "TruncateDataCollection-oracle-accessories-source",
+      "taskClass": "TruncateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "oracle-accessories-source"
+        }
+      }
+    },
+    {
+      "taskCode": "VffFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "int_endeca_accessory.vff",
+          "record_delimiter": "||REC||",
+          "value_delimiter": "||"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "customerCode": "rogers",
+          "dataRepositoryCode": "eclipse-dev",
+          "dataCollectionCode": "oracle-accessories-source"
+        }
+      }
+    }
+  ]
+}
+

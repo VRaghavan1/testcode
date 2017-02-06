@@ -1,0 +1,77 @@
+{
+  "tasks": [
+    {
+      "taskCode": "RemoveDataCollection",
+      "taskConfigurationTemplate": {
+        "in": "",
+        "params": {
+          "datareposervice_host": "{TARGET_DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{TARGET_DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{TARGET_CUSTOMER_CODE}",
+          "dataRepositoryCode": "{TARGET_DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "demo-packages",
+          "successIfNotExists": true,
+          "authorization_code": "{AUTHORIZATION_CODE}"
+        }
+      }
+    },
+    {
+      "taskCode": "CreateDataCollection",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{TARGET_DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{TARGET_DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{TARGET_CUSTOMER_CODE}",
+          "dataRepositoryCode": "{TARGET_DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "demo-packages",
+          "dataRecordIdentifierProperty": "id",
+          "authorization_code": "{AUTHORIZATION_CODE}",
+          "name": "Package Records",
+          "description": "Rogers Package Records"
+        }
+      }
+    },
+    {
+      "taskCode": "DataRepositoryToDataRecordBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{DATA_REPOSITORY_SERVICE_PORT}",
+          "customer_code": "rogers",
+          "datarepo_code": "eclipse-dev",
+          "datarepo_collection_code": "tv-packages-record"}
+      }
+    },
+    {
+      "taskCode": "ReplacePropertyNames",
+      "taskConfigurationTemplate": {
+        "params": {
+          "pattern": "~",
+          "replacement": "_",
+          "property": "*"
+        }
+      }
+    },
+   {
+     "taskCode": "Debug",
+     "taskConfigurationTemplate": {
+       "params": {}
+     }
+   },
+
+
+    {
+      "taskCode": "DataRecordToDataRepositoryBulk",
+      "taskConfigurationTemplate": {
+        "params": {
+          "datareposervice_host": "{TARGET_DATA_REPOSITORY_SERVICE_HOST}",
+          "datareposervice_port": "{TARGET_DATA_REPOSITORY_SERVICE_PORT}",
+          "customerCode": "{TARGET_CUSTOMER_CODE}",
+          "dataRepositoryCode": "{TARGET_DATA_REPOSITORY_CODE}",
+          "dataCollectionCode": "demo-packages",
+          "authorization_code": "{AUTHORIZATION_CODE}"
+        }
+      }
+    }
+  ]
+}

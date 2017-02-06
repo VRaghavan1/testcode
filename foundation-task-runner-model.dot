@@ -1,0 +1,268 @@
+digraph G {
+  rankdir=LR;
+  rank=same;
+  node [shape=box;  colorscheme=blues7;]
+  clusterrank="local";
+
+  subgraph clusterDataFiles {
+    #rank=same;
+    label="Data Files"
+    node [fillcolor=3; style=filled; penwidth=2;];
+    penwidth=1.0;
+
+    subgraph clusterATG{
+      label="atg";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "atg/endeca-export/" [label="atg/endeca-export"];
+    };
+    subgraph clusterAnalytics{
+      label="analytics";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "analytics/*.csv";
+    };
+    subgraph clusterCLICC{
+      label="clicc";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "clicc/A_LA_CARTE_CHANNELS.csv";
+      "clicc/CLICC_DTV_CITY_TO_SYSTEMNAME.csv";
+      "clicc/CLICC_DTV_DOTCOM_*.csv";
+    };
+    subgraph clusterCurated{
+      label="curated";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "curated/MAPPING_CLICC_DTV_TO_POM.csv"
+      "curated/FEATURED_SHOWS.csv"
+      "curated/PACKAGE_CHANNEL_COUNTS.csv"
+      "curated/PostalCode_ChannelLineup.txt"
+    };
+    subgraph clusterFedFiles{
+      label="fed-files";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "fed-files/rogers_endeca_fed_file.csv";
+    };
+    subgraph clusterOracle{
+      label="oracle";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "oracle/int_endeca_accessory.vff";
+    };
+    subgraph clusterPOM{
+      label="pom";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "pom/PTV_Channel.csv";
+      "pom/PTV_Extract.csv";
+      "pom/PTV_Package.csv";
+      "pom/PTV_ThemePack.csv";
+      "pom/THEME_PACK.csv";
+    };
+    subgraph clusterROVI{
+      label="rovi";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "rovi/rovi_channels.csv";
+      "rovi/rovi_programs.csv";
+      "rovi/rovi_programs_description.csv";
+      "rovi/rovi_schedule.csv";
+      "rovi/rovi_series.csv";
+    };
+    subgraph clusterTeamsite{
+      label="teamsite";
+      #rank=same;
+      penwidth=2.0; style=filled; bgcolor="grey";
+      node [fillcolor=2; style=filled; penwidth=2;];
+      "teamsite/legacy-content/faq/*"
+      "teamsite/channel-content/*";
+      "teamsite/fragments/*";
+      "teamsite/new-content/*";
+      "teamsite/wireless-content/*";
+    };
+  };
+/*
+  subgraph clusterTaskChain {
+    rank=same;
+    rankdir=LR;
+    label="Task Chains"
+    node [fillcolor=4; style=filled; penwidth=2;];
+    penwidth=1.0;
+
+    subgraph cluster0000
+    {
+      label="0000";
+      rank=same;
+      "analytics/0000-load-analytics"
+
+      "clicc/0000-load-alacarte-channels"
+      "clicc/0000-load-clicc"
+      "clicc/0000-load-pom-to-clicc"
+      "clicc/0000-load-postalCode-to-channelLineup"
+      "clicc/0000-load-system-to-city"
+
+      "fed-files/0000-load-fedFiles"
+    }
+    subgraph cluster0010
+    {
+      label="0010";
+      rank=same;
+      "clicc/0010-create-channel"
+
+      "fed-files/0010-create-fedFiles-records"
+      "fed-files/0011-process-fedFiles-english-records"
+      "fed-files/0012-process-fedFiles-french-records"
+    }
+    subgraph cluster0020
+    {
+      label="0020";
+      rank=same;
+      "analytics/0020-load-analytics"
+
+      "clicc/0020-load-clicc-content-package-digitalCable"
+      "clicc/0020-load-clicc-content-service-digitalCable"
+      "clicc/0020-load-clicc-content-system-digitalCable"
+      "clicc/0020-load-cliccPompTeamsite-sku-channel-digitalCable"
+      "clicc/0020-load-postalCode-to-channelLineup"
+
+      "fed-files/0020-export-fedFiles-endeca"
+    }
+  };
+
+  subgraph lusterDataCollection {
+    label="Data Collection";
+    #rank=same;
+    penwidth=2.0; style=filled; bgcolor="grey";
+    node [fillcolor=2; style=filled; penwidth=2;];
+    "clicc-channels-source"
+    "alacarte-channels-source"
+    "clicc-pom-to-clicc-source"
+    "analytics-source"
+    "alacarte-channels-source"
+    "clicc-system-to-city-source"
+    "postal-code-to-service-source"
+    "teamsite-channel-content-source"
+    "pom-ptv-extract-source"
+    "pom-themepack-source"
+    "alacarte-channels-source"
+    "ptv-channel-source"
+    "ptv-package-source"
+    "ptv-themepack-source"
+    "rovi-channel-to-series"
+    "fed-files-source"
+    "fed-files-records"
+    "oracle-accessories-source"
+    "rovi-channels-source"
+    "rovi-schedule-source";
+    "rovi-series-source";
+    "channel-package-counts-source"
+    "teamsite-wireless-content-source"
+    "digital-package-records"
+    "digital-themepack-records"
+    "teamsite-legacy-content-source"
+
+  };
+*/
+
+  "analytics/*.csv" -> "analytics/0000-load-analytics" -> "analytics-source"; 
+
+  "analytics-source" -> "analytics/0020-load-analytics" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "clicc/A_LA_CARTE_CHANNELS.csv" -> "clicc/0000-load-alacarte-channels" -> "alacarte-channels-source";
+
+  "clicc/CLICC_DTV_DOTCOM_*.csv" -> "clicc/0000-load-clicc" -> "clicc-channels-source";
+  "clicc-system-to-city-source" -> "clicc/0000-load-clicc";
+
+  "curated/MAPPING_CLICC_DTV_TO_POM.csv" -> "clicc/0000-load-pom-to-clicc" -> "clicc-pom-to-clicc-source";
+  
+  "curated/PostalCode_ChannelLineup.txt" -> "clicc/0000-load-postalCode-to-channelLineup" -> "postal-code-to-service-source";
+
+  "clicc/CLICC_DTV_CITY_TO_SYSTEMNAME.csv" -> "clicc/0000-load-system-to-city" -> "clicc-system-to-city-source";
+
+  "clicc-channels-source" -> "clicc/0020-load-clicc-content-package-digitalCable" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "clicc-channels-source" -> "clicc/0020-load-clicc-content-service-digitalCable" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "clicc-channels-source" -> "clicc/0020-load-clicc-content-system-digitalCable" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "clicc-channels-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+  "clicc-pom-to-clicc-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "teamsite-channel-content-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "pom-ptv-extract-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "pom-themepack-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "alacarte-channels-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "ptv-channel-source" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+  "rovi-channel-to-series" -> "clicc/0020-load-cliccPomTeamsite-sku-channel-digitalCable";
+
+  "postal-code-to-service-source" -> "clicc/0020-load-postalCode-to-channelLineup" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "fed-files/rogers_endeca_fed_file.csv" -> "fed-files/0000-load-fedFiles" -> "fed-files-source";
+
+  "fed-files-source" -> "fed-files/0010-create-fedFiles-records" -> "fed-files-records";
+
+  "fed-files-records" -> "fed-files/0011-process-fedFiles-english-records" -> "fed-files-records";
+
+  "fed-files-records" -> "fed-files/0012-process-fedFiles-french-records" -> "fed-files-records";
+
+  "fed-files-records" -> "fed-files/0020-export-fedFiles-endeca" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "oracle/int_endeca_accessory.vff" -> "oracle/0000-load-oracle-accessories" -> "oracle-accessories-source";
+  "oracle-accessories-source" -> "oracle/0020-load-oracle-accessories" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml";
+
+  "pom/PTV_Channel.csv" -> "pom/0000-load-ptv-channel" -> "ptv-channel-source";
+
+  "pom/PTV_Package.csv" -> "pom/0000-load-ptv-package" -> "ptv-package-source";
+
+  "pom/PTV_ThemePack.csv" -> "pom/0000-load-ptv-themepack" -> "ptv-themepack-source";
+
+  "pom/PTV_Extract.csv" -> "pom/0000-load-ptvExtract" -> "pom-ptv-extract-source";
+
+  "pom/THEME_PACK.csv" -> "pom/0000-load-themepack" -> "pom-themepack-source";
+
+  "rovi/rovi_channels.csv" -> "rovi/0000-load-rovi-channels" -> "rovi-channels-source";
+
+  "rovi/rovi_schedule.csv" -> "rovi/0000-load-rovi-schecule" -> "rovi-schedule-source";
+
+  "rovi/rovi_series.csv" -> "rovi/0000-load-rovi-series" -> "rovi-series-source";
+
+  "rovi-schedule-source" -> "rovi/0010-create-channel-to-series" -> "rovi-channel-to-series";
+  "rovi-channels-source" -> "rovi/0010-create-channel-to-series";
+  "rovi-series-source" -> "rovi/0010-create-channel-to-series";
+
+  "curated/PACKAGE_CHANNEL_COUNTS.csv" -> "teamsite/0000-load-channel-package-counts" -> "channel-package-counts-source"
+
+  "teamsite/channel-content/*" -> "teamsite/0000-load-teamsite-channel-content" -> "teamsite-channel-content-source";
+
+  "teamsite/wireless-content/*" -> "teamsite/0000-load-teamsite-wireless-content" -> "teamsite-wireless-content-source";
+
+  "pom-ptv-extract-source" -> "teamsite/0010-create-package-record" -> "digital-package-records"
+  "channel-package-counts-source" -> "teamsite/0010-create-package-record"
+  "teamsite-channel-content-source" -> "teamsite/0010-create-package-record"
+  "ptv-package-source" -> "teamsite/0010-create-package-record"
+
+  "pom-themepack-source" -> "teamsite/0010-create-themepack-record" -> "digital-themepack-records"
+  "teamsite-channel-content-source" -> "teamsite/0010-create-themepack-record"
+  "ptv-themepack-source" -> "teamsite/0010-create-themepack-record"
+
+
+  "digital-package-records" -> "teamsite/0020-load-package-record" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml"
+  
+  "digital-themepack-records" -> "teamsite/0020-load-themepack-record" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml"
+
+  "teamsite/legacy-content/faq/*" -> "teamsiteLegacy/0000-load-teamsiteLegacy" -> "teamsite-legacy-content-source"
+
+  "teamsite-legacy-content-source" -> "teamsiteLegacy/0020-load-teamsite-legacy-content-source" -> "{DATA_PROCESSING_FOUNDATION}/temp/{TASK_FILENAME}.xml"
+
+  "teamsite-legacy-content-source" -> "typeahead/0010-create-typeahead-record"
+
+}
