@@ -1,0 +1,51 @@
+{
+  "tasks": [
+    {
+      "taskCode": "SQLiteExecuteSQL",
+      "taskConfigurationTemplate": {
+        "in": "{DATA_PROCESSING_FOUNDATION_CLICC}",
+        "params": {
+            "sql": [
+              "DROP TABLE IF EXISTS MARQUEE_RULE",
+              "CREATE TABLE MARQUEE_RULE(SYSTEM_TABNUM,MUNICIPALITY,SUFFIX,SYSTEM_LINEUP_TYPE)"   
+            ],
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            }
+        }
+      }
+    },
+    {
+      "taskCode": "CsvFileFolderToDataRecord",
+      "taskConfigurationTemplate": {
+        "params": {
+          "file_pattern": "MARQUEE_RULE_*.csv",
+          "value_delimeter": "|"
+        }
+      }
+    },
+//    {
+//      "taskCode": "Debug",
+//      "taskConfigurationTemplate": {
+//        "params": {}
+//      }
+//    },
+    {
+      "taskCode": "SQLiteWrite",
+      "taskConfigurationTemplate": {
+        "params": {
+            "sql": "INSERT INTO MARQUEE_RULE(SYSTEM_TABNUM,MUNICIPALITY,SUFFIX,SYSTEM_LINEUP_TYPE) VALUES($SYSTEM_TABNUM,$MUNICIPALITY,$SUFFIX,$SYSTEM_LINEUP_TYPE)",
+            "connection": {
+                "filename": "{DATA_PROCESSING_FOUNDATION}/{TEMPDIRECTORY}/clicc.db"
+            },
+            "sqlParameters": [
+              { "parameter":"$SYSTEM_TABNUM", "value": "SYSTEM_TABNUM" },
+              { "parameter":"$MUNICIPALITY", "value": "MUNICIPALITY" },
+              { "parameter":"$SUFFIX", "value": "SUFFIX" },
+              { "parameter":"$SYSTEM_LINEUP_TYPE", "value": "SYSTEM_LINEUP_TYPE" }
+            ]
+        }
+      }
+    }
+  ]
+}
