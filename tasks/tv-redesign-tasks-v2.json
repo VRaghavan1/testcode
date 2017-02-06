@@ -1,7 +1,0 @@
-{
-    "taskFiles": [
-        "tasks/tv-redesign-v2/*.json",
-        "tasks/featured-shows/0000-*.json",
-        "tasks/featured-shows/0010-*.json"
-    ]
-}

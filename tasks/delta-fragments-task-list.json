@@ -1,8 +1,0 @@
-{
-    "taskFiles": [
-        "tasks/teamsite-aggregate-support/*.json",
-        "tasks/fragments/*.json",
-        "tasks/teamsite-legacy/*.json",
-        "tasks/teamsite-new/*.json"
-    ]
-}
